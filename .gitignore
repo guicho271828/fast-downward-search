@@ -1,0 +1,7 @@
+/.obj/
+*~
+#*
+downward-*
+/ext/
+/html/
+/latex/
