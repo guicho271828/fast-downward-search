@@ -1,0 +1,14 @@
+
+
+
+zlib
+libcomplearn
+
+ubuntu package:
+zlib1g-dev
+lib64z1-dev
+
+https://bugs.launchpad.net/ubuntu/+source/zlib/+bug/1155307
+
+: sudo ln -s /usr/include/x86_64-linux-gnu/zconf.h /usr/include
+

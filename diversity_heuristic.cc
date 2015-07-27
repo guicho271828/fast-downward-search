@@ -8,8 +8,10 @@
 #include <cstddef>
 #include <limits>
 #include <utility>
-#include <zlib>
+#include <zlib.h>
 using namespace std;
+
+// normalized_computation_distance
 
 DiversityHeuristic::DiversityHeuristic(const Options &opts)
     : Heuristic(opts) {
