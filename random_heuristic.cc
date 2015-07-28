@@ -1,36 +1,36 @@
-#include "diversity_heuristic.h"
+#include "random_heuristic.h"
 
 #include "global_state.h"
 #include "option_parser.h"
 #include "plugin.h"
 #include "task_tools.h"
-
+#include <random>
 #include <cstddef>
 #include <limits>
 #include <utility>
-#include <zlib.h>
+
 using namespace std;
 
 // normalized_computation_distance
 
-DiversityHeuristic::DiversityHeuristic(const Options &opts)
+RandomHeuristic::RandomHeuristic(const Options &opts)
     : Heuristic(opts) {
   // constructor
 }
 
-DiversityHeuristic::~DiversityHeuristic() {}
+RandomHeuristic::~RandomHeuristic() {}
 
-void DiversityHeuristic::initialize() {
-    cout << "Initializing diversity heuristic..." << endl;
+void RandomHeuristic::initialize() {
+    cout << "Initializing random heuristic..." << endl;
+    mt.seed(1);
 }
 
-int DiversityHeuristic::compute_heuristic(const GlobalState &global_state) {
-    // State state = convert_global_state(global_state);
-    return 0;
+int RandomHeuristic::compute_heuristic(const GlobalState &global_state) {
+  return mt();
 }
 
 static Heuristic *_parse(OptionParser &parser) {
-    parser.document_synopsis("Diversity heuristic", "Returns the novelty of the state");
+    parser.document_synopsis("Random heuristic", "Returns a random value");
     parser.document_language_support("action costs", "supported");
     parser.document_language_support("conditional effects", "supported");
     parser.document_language_support("axioms", "supported");
@@ -44,7 +44,7 @@ static Heuristic *_parse(OptionParser &parser) {
     if (parser.dry_run())
       return 0;
     else
-      return new DiversityHeuristic(opts);
+      return new RandomHeuristic(opts);
 }
 
-static Plugin<Heuristic> _plugin("diversity", _parse);
+static Plugin<Heuristic> _plugin("random", _parse);

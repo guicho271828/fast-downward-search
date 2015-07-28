@@ -118,6 +118,7 @@ HEADERS += hm_heuristic.h
 HEADERS += lm_cut_heuristic.h
 HEADERS += max_heuristic.h
 HEADERS += diversity_heuristic.h
+HEADERS += random_heuristic.h
 
 HEADERS += merge_and_shrink/labels.h \
            merge_and_shrink/merge_and_shrink_heuristic.h \
@@ -237,7 +238,7 @@ endif
 CXXFLAGS =
 CXXFLAGS += -g
 CXXFLAGS += $(BITWIDTHOPT)
-CXXFLAGS += -std=c++11 -Wall -Wextra -pedantic -Werror
+CXXFLAGS += -std=c++11 -Wextra -pedantic -Werror #-Wall
 
 CXXFLAGS += -Iext
 ifeq ($(DOWNWARD_OS), osx)
