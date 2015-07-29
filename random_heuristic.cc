@@ -26,7 +26,7 @@ void RandomHeuristic::initialize() {
 }
 
 int RandomHeuristic::compute_heuristic(const GlobalState &global_state) {
-  return mt();
+  return abs(mt());
 }
 
 static Heuristic *_parse(OptionParser &parser) {
