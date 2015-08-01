@@ -5,6 +5,7 @@
 #include <random>
 
 class RandomHeuristic : public Heuristic {
+  int seed;
   std::minstd_rand0 generator;
 protected:
     virtual void initialize();

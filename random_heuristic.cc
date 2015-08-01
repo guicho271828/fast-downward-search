@@ -14,7 +14,8 @@ using namespace std;
 // normalized_computation_distance
 
 RandomHeuristic::RandomHeuristic(const Options &opts)
-    : Heuristic(opts) {
+  : Heuristic(opts),
+    seed(opts.get<int>("seed")) {
   // constructor
 }
 
@@ -39,6 +40,7 @@ static Heuristic *_parse(OptionParser &parser) {
     parser.document_property("consistent", "no");
     parser.document_property("safe", "no");
     parser.document_property("preferred operators", "no");
+    parser.add_option<int>("seed", "seed value","1");
 
     Heuristic::add_options_to_parser(parser);
     Options opts = parser.parse();
