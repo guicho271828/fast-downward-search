@@ -22,11 +22,12 @@ RandomHeuristic::~RandomHeuristic() {}
 
 void RandomHeuristic::initialize() {
     cout << "Initializing random heuristic..." << endl;
-    mt.seed(1);
+    generator.seed(1);
 }
 
 int RandomHeuristic::compute_heuristic(const GlobalState &global_state) {
-  return abs(mt());
+  return abs(generator())+1;
+  // return 42;
 }
 
 static Heuristic *_parse(OptionParser &parser) {

@@ -5,7 +5,7 @@
 #include <random>
 
 class RandomHeuristic : public Heuristic {
-  std::mt19937 mt;
+  std::minstd_rand0 generator;
 protected:
     virtual void initialize();
     virtual int compute_heuristic(const GlobalState &global_state);
