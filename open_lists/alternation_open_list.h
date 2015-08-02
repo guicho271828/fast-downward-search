@@ -12,11 +12,10 @@ class OptionParser;
 
 template<class Entry>
 class AlternationOpenList : public OpenList<Entry> {
-    std::vector<OpenList<Entry> *> open_lists;
-    std::vector<int> priorities;
-
     const int boost_amount;
 protected:
+    std::vector<OpenList<Entry> *> open_lists;
+    std::vector<int> priorities;
     virtual void do_insertion(EvaluationContext &eval_context,
                               const Entry &entry) override;
 
