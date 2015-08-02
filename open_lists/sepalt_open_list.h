@@ -9,7 +9,7 @@ class OptionParser;
 
 template<class Entry>
 class SepaltOpenList : public AlternationOpenList<Entry> {
-    int best;
+    int best = 0;
 
 protected:
     virtual void do_insertion(EvaluationContext &eval_context,
