@@ -6,6 +6,7 @@
 #include "open_lists/pareto_open_list.h"
 #include "open_lists/standard_scalar_open_list.h"
 #include "open_lists/tiebreaking_open_list.h"
+#include "open_lists/sepalt_open_list.h"
 
 #include <iostream>
 #include <map>
@@ -50,6 +51,8 @@ public:
             "tiebreaking", TieBreakingOpenList<Entry>::_parse);
         Registry<OpenList<Entry > *>::instance()->register_object(
             "alt", AlternationOpenList<Entry>::_parse);
+        Registry<OpenList<Entry > *>::instance()->register_object(
+            "sepalt", SepaltOpenList<Entry>::_parse);
         Registry<OpenList<Entry > *>::instance()->register_object(
             "pareto", ParetoOpenList<Entry>::_parse);
     }
