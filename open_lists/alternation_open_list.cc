@@ -33,11 +33,7 @@ void AlternationOpenList<Entry>::do_insertion(
 }
 
 template<class Entry>
-Entry AlternationOpenList<Entry>::remove_min(vector<int> *key) {
-    if (key) {
-        cerr << "not implemented -- see msg639 in the tracker" << endl;
-        exit_with(EXIT_UNSUPPORTED);
-    }
+int AlternationOpenList<Entry>::best_list_index (){
     int best = -1;
     for (size_t i = 0; i < open_lists.size(); ++i) {
         if (!open_lists[i]->empty() &&
@@ -46,6 +42,17 @@ Entry AlternationOpenList<Entry>::remove_min(vector<int> *key) {
         }
     }
     assert(best != -1);
+    return best;
+}
+
+
+template<class Entry>
+Entry AlternationOpenList<Entry>::remove_min(vector<int> *key) {
+    if (key) {
+        cerr << "not implemented -- see msg639 in the tracker" << endl;
+        exit_with(EXIT_UNSUPPORTED);
+    }
+    int best = best_list_index();
     OpenList<Entry> *best_list = open_lists[best];
     assert(!best_list->empty());
     ++priorities[best];
