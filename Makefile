@@ -57,7 +57,6 @@ HEADERS = \
           heuristic_cache.h \
           heuristic.h \
           int_packer.h \
-          ipc_max_heuristic.h \
           iterated_search.h \
           max_evaluator.h \
           operator_cost.h \
@@ -97,6 +96,7 @@ HEADERS = \
           # \
           # lp_internals.h \
           # lp_solver.h \
+#           ipc_max_heuristic.h \
 
           # lazy_search.h \
           # enforced_hill_climbing_search.h \
