@@ -96,9 +96,9 @@ HEADERS = \
           open_lists/pareto_open_list.h \
           open_lists/standard_scalar_open_list.h \
           open_lists/tiebreaking_open_list.h \
-          \
-          lp_internals.h \
-          lp_solver.h \
+          # \
+          # lp_internals.h \
+          # lp_solver.h \
 
 ## Each of the following "HEADERS += ..." constructs defines a
 ## "plugin" feature that can be enabled or disabled by simply
@@ -113,10 +113,10 @@ HEADERS += blind_search_heuristic.h
 # HEADERS += cea_heuristic.h
 HEADERS += cg_heuristic.h cg_cache.h
 # HEADERS += ff_heuristic.h
-HEADERS += goal_count_heuristic.h
-HEADERS += hm_heuristic.h
+# HEADERS += goal_count_heuristic.h
+# HEADERS += hm_heuristic.h
 HEADERS += lm_cut_heuristic.h
-HEADERS += max_heuristic.h
+# HEADERS += max_heuristic.h
 # HEADERS += diversity_heuristic.h
 HEADERS += random_heuristic.h
 HEADERS += open_lists/sepalt_open_list.h
