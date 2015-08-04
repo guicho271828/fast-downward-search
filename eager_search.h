@@ -13,9 +13,6 @@ class Options;
 class ScalarEvaluator;
 
 class EagerSearch : public SearchEngine {
-    const bool reopen_closed_nodes;
-    const bool use_multi_path_dependence;
-
     OpenList<StateID> *open_list;
     ScalarEvaluator *f_evaluator;
 
