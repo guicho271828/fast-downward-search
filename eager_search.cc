@@ -24,7 +24,6 @@ using namespace std;
 EagerSearch::EagerSearch(const Options &opts)
   : SearchEngine(opts),
     open_list(opts.get<OpenList<StateID> *>("open")),
-    f_evaluator(opts.get<ScalarEvaluator *>("f_eval", nullptr)),
     preferred_operator_heuristics(opts.get_list<Heuristic *>("preferred")) {
 }
 
@@ -42,13 +41,6 @@ void EagerSearch::initialize() {
   hset.insert(preferred_operator_heuristics.begin(),
               preferred_operator_heuristics.end());
 
-  // add heuristics that are used in the f_evaluator. They are usually also
-  // used in the open list and hence already be included, but we want to be
-  // sure.
-  if (f_evaluator) {
-    f_evaluator->get_involved_heuristics(hset);
-  }
-
   heuristics.assign(hset.begin(), hset.end());
   assert(!heuristics.empty());
 
@@ -65,9 +57,8 @@ void EagerSearch::initialize() {
   } else {
     if (search_progress.check_progress(eval_context))
       print_checkpoint_line(0);
-    start_f_value_statistics(eval_context);
     SearchNode node = search_space.get_node(initial_state);
-    node.open_initial(eval_context.get_heuristic_value(heuristics[0]));
+    node.open_initial();
 
     open_list->insert(eval_context, initial_state.get_id());
   }
@@ -131,8 +122,7 @@ void EagerSearch::per_node(SearchNode succ_node,
                    is_preferred,
                    &statistics);
     hcaches[succ_node.get_state()] = eval_context.get_cache();
-            statistics.inc_evaluated_states();
-            succ_node.clear_h_dirty();
+    statistics.inc_evaluated_states();
 
             if (open_list->is_dead_end(eval_context)) {
                 succ_node.mark_as_dead_end();
@@ -140,8 +130,7 @@ void EagerSearch::per_node(SearchNode succ_node,
       return;
             }
 
-    succ_node.open(
-                   eval_context.get_heuristic_value(heuristics[0]), node, op);
+  succ_node.open(node, op);
 
     open_list->insert(eval_context, succ_node.get_state().get_id());
     // eval_context.get_cache().dump();
@@ -185,7 +174,6 @@ pair<SearchNode, bool> EagerSearch::fetch_next_node() {
 
     node.close();
     assert(!node.is_dead_end());
-    update_f_value_statistics(node);
     statistics.inc_expanded();
     return make_pair(node, true);
   }
@@ -201,24 +189,6 @@ void EagerSearch::dump_search_space() const {
   search_space.dump();
 }
 
-void EagerSearch::start_f_value_statistics(EvaluationContext &eval_context) {
-  if (f_evaluator) {
-    int f_value = eval_context.get_heuristic_value(f_evaluator);
-    statistics.report_f_value_progress(f_value);
-  }
-}
-
-void EagerSearch::update_f_value_statistics(const SearchNode &node) {
-  if (f_evaluator) {
-    /*
-      TODO: This code doesn't fit the idea of supporting
-      an arbitrary f evaluator.
-    */
-    int new_f_value = node.get_g() + node.get_h();
-    statistics.report_f_value_progress(new_f_value);
-  }
-}
-
 static SearchEngine *_parse(OptionParser &parser) {
   //open lists are currently registered with the parser on demand,
   //because for templated classes the usual method of registering
@@ -228,11 +198,6 @@ static SearchEngine *_parse(OptionParser &parser) {
   parser.document_synopsis("Eager best-first search", "");
 
   parser.add_option<OpenList<StateID> *>("open", "open list");
-  parser.add_option<ScalarEvaluator *>(
-                                       "f_eval",
-                                       "set evaluator for jump statistics. "
-                                       "(Optional; if no evaluator is used, jump statistics will not be displayed.)",
-                                       OptionParser::NONE);
   parser.add_list_option<Heuristic *>(
                                       "preferred",
                                       "use preferred operators of these heuristics", "[]");
