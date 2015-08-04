@@ -56,14 +56,16 @@ void EagerSearch::initialize() {
     cout << "Initial state is a dead end." << endl;
   } else {
     if (search_progress.check_progress(eval_context))
-      print_checkpoint_line(0);
-    SearchNode node = search_space.get_node(initial_state);
-    node.open_initial();
-
-    open_list->insert(eval_context, initial_state.get_id());
+        print_checkpoint_line(0);
+    initialize_open_list(initial_state);
   }
-
   print_initial_h_values(eval_context);
+}
+
+void EagerSearch::initialize_open_list(GlobalState initial){
+    auto node = search_space.get_node(initial_state);
+    node.open_initial();
+    open_list->insert(eval_context, initial_state.get_id());
 }
 
 void EagerSearch::print_checkpoint_line(int g) const {
@@ -79,9 +81,8 @@ void EagerSearch::print_statistics() const {
 
 SearchStatus EagerSearch::step() {
   auto n = fetch_next_node();
-  if (!n.second) {
+  if (!n.second)
     return FAILED;
-  }
   auto node = n.first;
   auto s = node.get_state();
   if (check_goal_and_set_plan(s))
@@ -96,62 +97,74 @@ SearchStatus EagerSearch::step() {
       preferred_ops.insert(preferred.begin(), preferred.end());
     }
   }
-
   for (const GlobalOperator *op : applicable_ops) {
     if ((node.get_real_g() + op->get_cost()) >= bound)
       continue;
-    auto succ_state = g_state_registry->get_successor_state(s, *op);
+    auto succ = g_state_registry->get_successor_state(s, *op);
     statistics.inc_generated();
-    auto succ_node = search_space.get_node(succ_state);
-    per_node(succ_node, node, op, (preferred_ops.find(op) != preferred_ops.end())) ;
+    per_node(succ, s, op, (preferred_ops.find(op) != preferred_ops.end())) ;
   }
   return IN_PROGRESS;
 }
 
-void EagerSearch::per_node(SearchNode succ_node,
-                           SearchNode node,
+void EagerSearch::per_node(GlobalState succ,
+                           GlobalState state,
                            const GlobalOperator *op,
                            const bool is_preferred){
-        if (succ_node.is_dead_end())
-    return;
+    auto succ_node = search_space.get_node(succ);
+    auto node = search_space.get_node(state);
+    if (succ_node.is_dead_end())
+        return;
 
-        if (succ_node.is_new()) {
-    EvaluationContext
-      eval_context(succ_node.get_state(),
-                   node.get_g() + get_adjusted_cost(*op),
-                   is_preferred,
-                   &statistics);
-    hcaches[succ_node.get_state()] = eval_context.get_cache();
-    statistics.inc_evaluated_states();
-
-            if (open_list->is_dead_end(eval_context)) {
-                succ_node.mark_as_dead_end();
-                statistics.inc_dead_ends();
-      return;
-            }
-
-  succ_node.open(node, op);
-
-    open_list->insert(eval_context, succ_node.get_state().get_id());
-    // eval_context.get_cache().dump();
-            if (search_progress.check_progress(eval_context)) {
-                print_checkpoint_line(succ_node.get_g());
-                reward_progress();
-            }
-        } else if (succ_node.get_g() > node.get_g() + get_adjusted_cost(*op)) {
-          // We found a new cheapest path to an open or closed state.          
-          if (succ_node.is_closed()) {
-            statistics.inc_reopened();
-          }
-          succ_node.reopen(node, op);
-
-    auto hcache = hcaches[succ_node.get_state()];
-    EvaluationContext eval_context(hcache, succ_node.get_g(), is_preferred, &statistics);
-    open_list->insert(eval_context, succ_node.get_state().get_id());
-    // hcache.dump();
+    if (succ_node.is_new()) {
+        per_node_new(succ,state,op,is_preferred);
+    } else if (succ_node.get_g() > node.get_g() + get_adjusted_cost(*op)) {
+        per_node_reopen(succ,state,op,is_preferred);
     }
 }
 
+void EagerSearch::per_node_new(GlobalState succ,
+                               GlobalState state,
+                               const GlobalOperator *op,
+                               const bool is_preferred){
+    auto succ_node = search_space.get_node(succ);
+    auto node = search_space.get_node(state);
+    EvaluationContext
+        eval_context(succ,
+                     node.get_g() + get_adjusted_cost(*op),
+                     is_preferred,
+                     &statistics);
+    hcaches[succ] = eval_context.get_cache();
+    statistics.inc_evaluated_states();
+
+    if (open_list->is_dead_end(eval_context)) {
+        succ_node.mark_as_dead_end();
+        statistics.inc_dead_ends();
+        return;
+    }
+    succ_node.open(node, op);
+    open_list->insert(eval_context, succ.get_id());
+    // eval_context.get_cache().dump();
+    if (search_progress.check_progress(eval_context)) {
+        print_checkpoint_line(succ_node.get_g());
+        reward_progress();
+    }
+}
+
+void EagerSearch::per_node_reopen(GlobalState succ,
+                                  GlobalState state,
+                                  const GlobalOperator *op,
+                                  const bool is_preferred){
+    auto succ_node = search_space.get_node(succ);
+    auto node = search_space.get_node(state);
+    // We found a new cheapest path to an open or closed state.          
+    if (succ_node.is_closed())
+        statistics.inc_reopened();
+    succ_node.reopen(node, op);
+    auto hcache = hcaches[succ];
+    EvaluationContext eval_context(hcache, succ_node.get_g(), is_preferred, &statistics);
+    open_list->insert(eval_context, succ.get_id());
+}
 
 pair<SearchNode, bool> EagerSearch::fetch_next_node() {
   while (true) {
