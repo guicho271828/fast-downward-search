@@ -56,6 +56,7 @@ void EagerSearch::initialize() {
     // Note: we consider the initial state as reached by a preferred
     // operator.
     EvaluationContext eval_context(initial_state, 0, true, &statistics);
+    hcaches[initial_state] = eval_context.get_cache();
 
     statistics.inc_evaluated_states();
 
@@ -124,8 +125,8 @@ SearchStatus EagerSearch::step() {
         if (succ_node.is_new()) {
             int succ_g = node.get_g() + get_adjusted_cost(*op);
 
-            EvaluationContext eval_context(
-                succ_state, succ_g, is_preferred, &statistics);
+            EvaluationContext eval_context(succ_state, succ_g, is_preferred, &statistics);
+            hcaches[succ_state] = eval_context.get_cache();
             statistics.inc_evaluated_states();
             succ_node.clear_h_dirty();
 
@@ -144,18 +145,15 @@ SearchStatus EagerSearch::step() {
                 reward_progress();
             }
         } else if (succ_node.get_g() > node.get_g() + get_adjusted_cost(*op)) {
-            // We found a new cheapest path to an open or closed state.
-                if (succ_node.is_closed()) {
-                    statistics.inc_reopened();
-                }
-                succ_node.reopen(node, op);
+          // We found a new cheapest path to an open or closed state.          
+          if (succ_node.is_closed()) {
+            statistics.inc_reopened();
+          }
+          succ_node.reopen(node, op);
 
-                EvaluationContext eval_context(
-                    succ_state, succ_node.get_g(), is_preferred, &statistics);
-
-
-                open_list->insert(eval_context, succ_state.get_id());
-          
+          HeuristicCache hcache = hcaches[succ_state];
+          EvaluationContext eval_context(hcache, succ_node.get_g(), is_preferred, &statistics);
+          open_list->insert(eval_context, succ_state.get_id());
         }
     }
 

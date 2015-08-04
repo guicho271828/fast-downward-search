@@ -16,6 +16,8 @@ class EagerSearch : public SearchEngine {
     OpenList<StateID> *open_list;
     ScalarEvaluator *f_evaluator;
 
+    PerStateInformation<HeuristicCache> hcaches;
+
     std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
 

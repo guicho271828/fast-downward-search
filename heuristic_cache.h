@@ -19,12 +19,14 @@ class HeuristicCache {
     GlobalState state;
 
 public:
+    explicit HeuristicCache();
     explicit HeuristicCache(const GlobalState &state);
     ~HeuristicCache() = default;
 
     EvaluationResult &operator[](ScalarEvaluator *heur);
 
     const GlobalState &get_state() const;
+    void dump() const;
 
     template<class Callback>
     void for_each_heuristic_value(const Callback &callback) const {
