@@ -14,6 +14,13 @@ SepaltOpenList<Entry>::SepaltOpenList(const Options &opts)
 }
 
 template<class Entry>
+SepaltOpenList<Entry>::SepaltOpenList(
+    const vector<OpenList<Entry> *> &sublists,
+    int boost_amount)
+  : AlternationOpenList<Entry>(sublists, boost_amount) {
+}
+
+template<class Entry>
 void SepaltOpenList<Entry>::do_insertion(
     EvaluationContext &eval_context, const Entry &entry) {
   AlternationOpenList<Entry>::open_lists[best]->insert(eval_context, entry);

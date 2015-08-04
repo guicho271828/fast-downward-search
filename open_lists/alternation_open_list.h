@@ -35,6 +35,7 @@ public:
     virtual bool is_reliable_dead_end(
         EvaluationContext &eval_context) const override;
     int best_list_index ();
+    int size () { return open_lists.size() ;}
     static OpenList<Entry> *_parse(OptionParser &parser);
 };
 
