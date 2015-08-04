@@ -113,33 +113,42 @@ SearchStatus EagerSearch::step() {
     for (const GlobalOperator *op : applicable_ops) {
         if ((node.get_real_g() + op->get_cost()) >= bound)
             continue;
-
-        GlobalState succ_state = g_state_registry->get_successor_state(s, *op);
+        auto succ_state = g_state_registry->get_successor_state(s, *op);
         statistics.inc_generated();
-        bool is_preferred = (preferred_ops.find(op) != preferred_ops.end());
-        SearchNode succ_node = search_space.get_node(succ_state);
+        auto succ_node = search_space.get_node(succ_state);
+        per_node(succ_node, node, op, (preferred_ops.find(op) != preferred_ops.end())) ;
+    }
+    return IN_PROGRESS;
+}
 
+void EagerSearch::per_node(SearchNode succ_node,
+                           SearchNode node,
+                           const GlobalOperator *op,
+                           const bool is_preferred){
         if (succ_node.is_dead_end())
-            continue;
+    return;
 
         if (succ_node.is_new()) {
-            int succ_g = node.get_g() + get_adjusted_cost(*op);
-
-            EvaluationContext eval_context(succ_state, succ_g, is_preferred, &statistics);
-            hcaches[succ_state] = eval_context.get_cache();
+    EvaluationContext
+      eval_context(succ_node.get_state(),
+                   node.get_g() + get_adjusted_cost(*op),
+                   is_preferred,
+                   &statistics);
+    hcaches[succ_node.get_state()] = eval_context.get_cache();
             statistics.inc_evaluated_states();
             succ_node.clear_h_dirty();
 
             if (open_list->is_dead_end(eval_context)) {
                 succ_node.mark_as_dead_end();
                 statistics.inc_dead_ends();
-                continue;
+      return;
             }
 
-            int succ_h = eval_context.get_heuristic_value(heuristics[0]);
-            succ_node.open(succ_h, node, op);
+    succ_node.open(
+      eval_context.get_heuristic_value(heuristics[0]), node, op);
 
-            open_list->insert(eval_context, succ_state.get_id());
+    open_list->insert(eval_context, succ_node.get_state().get_id());
+    // eval_context.get_cache().dump();
             if (search_progress.check_progress(eval_context)) {
                 print_checkpoint_line(succ_node.get_g());
                 reward_progress();
@@ -151,14 +160,13 @@ SearchStatus EagerSearch::step() {
           }
           succ_node.reopen(node, op);
 
-          HeuristicCache hcache = hcaches[succ_state];
+    HeuristicCache hcache = hcaches[succ_node.get_state()];
           EvaluationContext eval_context(hcache, succ_node.get_g(), is_preferred, &statistics);
-          open_list->insert(eval_context, succ_state.get_id());
-        }
+    open_list->insert(eval_context, succ_node.get_state().get_id());
+    // hcache.dump();
     }
-
-    return IN_PROGRESS;
 }
+
 
 pair<SearchNode, bool> EagerSearch::fetch_next_node() {
     while (true) {

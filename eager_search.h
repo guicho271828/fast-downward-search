@@ -35,6 +35,11 @@ public:
     explicit EagerSearch(const Options &opts);
     virtual ~EagerSearch() = default;
 
+    virtual void per_node(SearchNode succ_node,
+                          SearchNode node,
+                          const GlobalOperator *op,
+                          bool is_preferred);
+
     virtual void print_statistics() const override;
 
     void dump_search_space() const;
