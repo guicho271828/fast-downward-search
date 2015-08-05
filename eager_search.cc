@@ -47,21 +47,20 @@ void EagerSearch::initialize() {
   const GlobalState &initial_state = g_initial_state();
   // Note: we consider the initial state as reached by a preferred
   // operator.
-  EvaluationContext eval_context(initial_state, 0, true, &statistics);
-  (*hcaches)[initial_state] = eval_context.get_cache();
+  EvaluationContext* eval_context = get_context(initial_state, 0, true, &statistics);
 
   statistics.inc_evaluated_states();
 
-  if (open_list->is_dead_end(eval_context)) {
+  if (open_list->is_dead_end(*eval_context)) {
     cout << "Initial state is a dead end." << endl;
   } else {
-    if (search_progress.check_progress(eval_context))
+    if (search_progress.check_progress(*eval_context))
         print_checkpoint_line(0);
     auto node = search_space.get_node(initial_state);
     node.open_initial();
-    open_list->insert(eval_context, initial_state.get_id());
+    open_list->insert(*eval_context, initial_state.get_id());
   }
-  print_initial_h_values(eval_context);
+  print_initial_h_values(*eval_context);
 }
 
 
@@ -87,10 +86,10 @@ SearchStatus EagerSearch::step() {
   vector<const GlobalOperator *> applicable_ops;
   set<const GlobalOperator *> preferred_ops;
   g_successor_generator->generate_applicable_ops(s, applicable_ops);
-  EvaluationContext eval_context(s, node.get_g(), false, &statistics);
+  EvaluationContext *eval_context = get_context(s, node.get_g(), false, &statistics);
   for (Heuristic *heur : preferred_operator_heuristics) {
-    if (!eval_context.is_heuristic_infinite(heur)) {
-      auto preferred = eval_context.get_preferred_operators(heur);
+    if (!eval_context->is_heuristic_infinite(heur)) {
+      auto preferred = eval_context->get_preferred_operators(heur);
       preferred_ops.insert(preferred.begin(), preferred.end());
     }
   }
@@ -126,23 +125,21 @@ void EagerSearch::per_node_new(GlobalState succ,
                                const bool is_preferred){
     auto succ_node = search_space.get_node(succ);
     auto node = search_space.get_node(state);
-    EvaluationContext
-        eval_context(succ,
+    EvaluationContext* eval_context =
+        get_context(succ,
                      node.get_g() + get_adjusted_cost(*op),
                      is_preferred,
                      &statistics);
-    (*hcaches)[succ] = eval_context.get_cache();
     statistics.inc_evaluated_states();
 
-    if (open_list->is_dead_end(eval_context)) {
+    if (open_list->is_dead_end(*eval_context)) {
         succ_node.mark_as_dead_end();
         statistics.inc_dead_ends();
         return;
     }
     succ_node.open(node, op);
-    open_list->insert(eval_context, succ.get_id());
-    // eval_context.get_cache().dump();
-    if (search_progress.check_progress(eval_context)) {
+    open_list->insert(*eval_context, succ.get_id());
+    if (search_progress.check_progress(*eval_context)) {
         print_checkpoint_line(succ_node.get_g());
         reward_progress();
     }
@@ -158,9 +155,8 @@ void EagerSearch::per_node_reopen(GlobalState succ,
     if (succ_node.is_closed())
         statistics.inc_reopened();
     succ_node.reopen(node, op);
-    auto hcache = (*hcaches)[succ];
-    EvaluationContext eval_context(hcache, succ_node.get_g(), is_preferred, &statistics);
-    open_list->insert(eval_context, succ.get_id());
+    EvaluationContext *eval_context = get_context(succ, succ_node.get_g(), is_preferred, &statistics);
+    open_list->insert(*eval_context, succ.get_id());
 }
 
 pair<SearchNode, bool> EagerSearch::fetch_next_node() {
