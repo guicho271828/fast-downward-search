@@ -33,6 +33,19 @@ SearchEngine::~SearchEngine() {
 void SearchEngine::print_statistics() const {
 }
 
+EvaluationContext* SearchEngine::get_context(const GlobalState &state,
+                                             int g, bool is_preferred,
+                                             SearchStatistics *statistics){
+    // read the heuristic cache
+    HeuristicCache* cache = (*hcaches)[state];
+    if (cache == nullptr){
+        cache = new HeuristicCache(state);
+        (*hcaches)[state] = cache;
+    }
+    return new EvaluationContext(*cache,g,is_preferred,statistics);
+}
+
+
 bool SearchEngine::found_solution() const {
     return solution_found;
 }
