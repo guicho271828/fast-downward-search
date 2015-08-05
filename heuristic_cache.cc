@@ -7,9 +7,6 @@ using namespace std;
 HeuristicCache::HeuristicCache(const GlobalState &state)
     : state(state) {
 }
-HeuristicCache::HeuristicCache()
-  : state(g_initial_state()) {
-}
 
 EvaluationResult &HeuristicCache::operator[](ScalarEvaluator *heur) {
     return eval_results[heur];

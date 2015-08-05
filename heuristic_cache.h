@@ -19,7 +19,6 @@ class HeuristicCache {
     GlobalState state;
 
 public:
-    explicit HeuristicCache();
     explicit HeuristicCache(const GlobalState &state);
     ~HeuristicCache() = default;
 
