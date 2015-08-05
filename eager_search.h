@@ -17,23 +17,20 @@ class EagerSearch : public SearchEngine {
     std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
 
-
 protected:
-    PerStateInformation<HeuristicCache> hcaches;
     OpenList<StateID> *open_list;
-    virtual void initialize() override;
-    virtual SearchStatus step() override;
-    virtual std::pair<SearchNode, bool> fetch_next_node();
-    void print_checkpoint_line(int g) const;
     void reward_progress();
-    virtual void initialize_open_list(GlobalState initial);
     virtual void per_node(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
     virtual void per_node_new(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
     virtual void per_node_reopen(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
+    void print_checkpoint_line(int g) const;
+    virtual std::pair<SearchNode, bool> fetch_next_node();
 
 public:
     explicit EagerSearch(const Options &opts);
     virtual ~EagerSearch() = default;
+    virtual void initialize() override;
+    virtual SearchStatus step() override;
 
     virtual void print_statistics() const override;
 

@@ -12,6 +12,8 @@ class Options;
 #include "search_progress.h"
 #include "search_space.h"
 #include "search_statistics.h"
+#include "heuristic_cache.h"
+#include "per_state_information.h"
 
 enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED};
 
@@ -30,15 +32,18 @@ protected:
     OperatorCost cost_type;
     double max_time;
 
-    virtual void initialize() {}
-    virtual SearchStatus step() = 0;
-
     void set_plan(const Plan &plan);
     bool check_goal_and_set_plan(const GlobalState &state);
     int get_adjusted_cost(const GlobalOperator &op) const;
 public:
     SearchEngine(const Options &opts);
     virtual ~SearchEngine();
+    virtual void initialize() {};
+    virtual void initialize(PerStateInformation<HeuristicCache>* other_hcaches){
+        hcaches = other_hcaches;
+        initialize();
+    };
+    virtual SearchStatus step() = 0;
     virtual void print_statistics() const;
     virtual void save_plan_if_necessary() const;
     bool found_solution() const;
@@ -49,7 +54,13 @@ public:
     void set_bound(int b) {bound = b; }
     int get_bound() {return bound; }
     static void add_options_to_parser(OptionParser &parser);
+
+    /* its not static, but assuming there are only ~4 search engines... */
+    PerStateInformation<HeuristicCache>* hcaches;
+    PerStateInformation<HeuristicCache> default_hcaches;
 };
+
+
 
 /*
   Print heuristic values of all heuristics evaluated in the evaluation context.
