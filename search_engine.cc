@@ -41,6 +41,7 @@ EvaluationContext* SearchEngine::get_context(const GlobalState &state,
     if (cache == nullptr){
         cache = new HeuristicCache(state);
         (*hcaches)[state] = cache;
+        statistics->inc_evaluated_states();
     }
     return new EvaluationContext(*cache,g,is_preferred,statistics);
 }
