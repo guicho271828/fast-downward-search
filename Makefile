@@ -238,7 +238,6 @@ else ifneq ($(DOWNWARD_BITWIDTH), native)
 endif
 
 CXXFLAGS =
-CXXFLAGS += -g
 CXXFLAGS += $(BITWIDTHOPT)
 CXXFLAGS += -std=c++11 -Wextra -pedantic -Werror #-Wall
 
@@ -250,7 +249,6 @@ endif
 
 LDFLAGS =
 LDFLAGS += $(BITWIDTHOPT)
-LDFLAGS += -g
 
 POSTLINKOPT =
 
@@ -267,7 +265,7 @@ CXXFLAGS_DEBUG    = -O0 -g
 CXXFLAGS_PROFILE  = -O3 -pg
 
 LDFLAGS_RELEASE  =
-LDFLAGS_DEBUG    =
+LDFLAGS_DEBUG    = -g
 LDFLAGS_PROFILE  = -pg
 
 POSTLINKOPT_RELEASE =
