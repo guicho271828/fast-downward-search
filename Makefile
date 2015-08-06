@@ -174,7 +174,7 @@ HEADERS += random_heuristic.h
 SOURCES = planner.cc $(HEADERS:%.h=%.cc)
 TARGET = downward
 
-default: release
+default: release debug
 
 ARGS_PROFILE = --search 'astar(lmcut())' < profile-input.pre
 
@@ -263,7 +263,7 @@ POSTLINKOPT =
 ##        For details, see man gcc on -static-libgcc.
 
 CXXFLAGS_RELEASE  = -O3 -DNDEBUG -fomit-frame-pointer
-CXXFLAGS_DEBUG    = -O3
+CXXFLAGS_DEBUG    = -O0 -g
 CXXFLAGS_PROFILE  = -O3 -pg
 
 LDFLAGS_RELEASE  =
