@@ -32,9 +32,9 @@ protected:
     OperatorCost cost_type;
     double max_time;
 
-    EvaluationContext* get_context(const GlobalState &state,
-                                   int g, bool is_preferred,
-                                   SearchStatistics *statistics);
+    EvaluationContext get_context(const GlobalState &state,
+                                  int g, bool is_preferred,
+                                  SearchStatistics *statistics);
     void set_plan(const Plan &plan);
     bool check_goal_and_set_plan(const GlobalState &state);
     int get_adjusted_cost(const GlobalOperator &op) const;
