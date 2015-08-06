@@ -45,12 +45,12 @@ void MultiSearch::print_statistics() const {
     int i = 0;
     SearchStatistics stat;
     for (auto engine : engines){
-        cout << "Search engine " << i << " :" << endl;
+        cout << "  Search engine " << i << ":" << endl;
         engine->print_statistics();
         i++;
         stat += engine->get_statistics();
     }
-    cout << "Aggregated:" << endl;
+    cout << "  Aggregated:" << endl;
     stat.print_detailed_statistics();
 }
 
