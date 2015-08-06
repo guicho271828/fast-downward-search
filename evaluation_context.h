@@ -47,7 +47,7 @@ class SearchStatistics;
 */
 
 class EvaluationContext {
-    HeuristicCache cache;
+    HeuristicCache* cache;
     int g_value;
     bool preferred;
     SearchStatistics *statistics;
@@ -62,30 +62,8 @@ public:
       TODO: Can we reuse caches? Can we move them instead of copying them?
     */
     EvaluationContext(
-        const HeuristicCache &cache, int g_value, bool is_preferred,
+        HeuristicCache &cache, int g_value, bool is_preferred,
         SearchStatistics *statistics);
-    /*
-      Create new heuristic cache for caching heuristic values. Used for example
-      by eager search.
-    */
-    EvaluationContext(
-        const GlobalState &state, int g_value, bool is_preferred,
-        SearchStatistics *statistics);
-    /*
-      Use the following constructor when you don't care about g values,
-      preferredness (and statistics), e.g. when sampling states for heuristics.
-
-      This constructor sets g_value to -1 and checks that neither get_g_value()
-      nor is_preferred() are called for objects constructed with it.
-
-      TODO: In the long term we might want to separate how path-dependent and
-            path-independent heuristics are evaluated. This change would remove
-            the need to store the g value and preferredness for evaluation
-            contexts that don't need this information.
-    */
-    EvaluationContext(
-        const GlobalState &state,
-        SearchStatistics *statistics = nullptr);
 
     ~EvaluationContext() = default;
 

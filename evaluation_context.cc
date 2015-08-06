@@ -10,28 +10,16 @@ using namespace std;
 
 
 EvaluationContext::EvaluationContext(
-    const HeuristicCache &cache, int g_value, bool is_preferred,
+    HeuristicCache &cache, int g_value, bool is_preferred,
     SearchStatistics *statistics)
-    : cache(cache),
+    : cache(&cache),
       g_value(g_value),
       preferred(is_preferred),
       statistics(statistics) {
 }
 
-EvaluationContext::EvaluationContext(
-    const GlobalState &state, int g_value, bool is_preferred,
-    SearchStatistics *statistics)
-    : EvaluationContext(HeuristicCache(state), g_value, is_preferred, statistics) {
-}
-
-EvaluationContext::EvaluationContext(
-    const GlobalState &state,
-    SearchStatistics *statistics)
-    : EvaluationContext(HeuristicCache(state), INVALID, false, statistics) {
-}
-
 const EvaluationResult &EvaluationContext::get_result(ScalarEvaluator *heur) {
-    EvaluationResult &result = cache[heur];
+    EvaluationResult &result = (*cache)[heur];
     if (result.is_uninitialized()) {
         result = heur->compute_result(*this);
         if (statistics && dynamic_cast<const Heuristic *>(heur)) {
@@ -40,15 +28,16 @@ const EvaluationResult &EvaluationContext::get_result(ScalarEvaluator *heur) {
             statistics->inc_evaluations();
         }
     }
+    assert(!(*cache)[heur].is_uninitialized());
     return result;
 }
 
 const HeuristicCache &EvaluationContext::get_cache() const {
-    return cache;
+    return *cache;
 }
 
 const GlobalState &EvaluationContext::get_state() const {
-    return cache.get_state();
+    return (*cache).get_state();
 }
 
 int EvaluationContext::get_g_value() const {
