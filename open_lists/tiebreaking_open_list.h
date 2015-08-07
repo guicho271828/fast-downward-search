@@ -50,6 +50,7 @@ public:
         EvaluationContext &eval_context) const override;
 
     static OpenList<Entry> *_parse(OptionParser &parser);
+    virtual int frontier_size() override;
 };
 
 #include "tiebreaking_open_list.cc"

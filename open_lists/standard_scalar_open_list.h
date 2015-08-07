@@ -46,6 +46,7 @@ public:
         EvaluationContext &eval_context) const override;
 
     static OpenList<Entry> *_parse(OptionParser &parser);
+    virtual int frontier_size() override;
 };
 
 #include "standard_scalar_open_list.cc"

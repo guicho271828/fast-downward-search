@@ -133,4 +133,14 @@ bool TieBreakingOpenList<Entry>::is_reliable_dead_end(
     return false;
 }
 
+template<class Entry>
+int TieBreakingOpenList<Entry>::frontier_size() {
+    auto it = buckets.begin();
+    assert(it != buckets.end());
+    return it->second.size();
+}
+
+
+
+
 #endif

@@ -28,4 +28,6 @@ bool OpenList<Entry>::only_contains_preferred_entries() const {
     return only_preferred;
 }
 
+
+
 #endif

@@ -100,4 +100,10 @@ OpenList<Entry> *BucketOpenList<Entry>::_parse(OptionParser &parser) {
         return new BucketOpenList<Entry>(opts);
 }
 
+template<class Entry>
+int BucketOpenList<Entry>::frontier_size() {
+    return buckets[lowest_bucket].size();
+}
+
+
 #endif

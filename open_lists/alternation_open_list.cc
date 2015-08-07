@@ -130,4 +130,13 @@ OpenList<Entry> *AlternationOpenList<Entry>::_parse(OptionParser &parser) {
         return new AlternationOpenList<Entry>(opts);
 }
 
+template<class Entry>
+int AlternationOpenList<Entry>::frontier_size() {
+    int max=0;
+    for (auto list : open_lists){
+        max = std::max(max,list->frontier_size());
+    }
+    return max;
+}
+
 #endif

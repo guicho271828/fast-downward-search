@@ -37,6 +37,7 @@ public:
     int best_list_index ();
     int size () { return open_lists.size() ;}
     static OpenList<Entry> *_parse(OptionParser &parser);
+    virtual int frontier_size() override;
 };
 
 #include "alternation_open_list.cc"

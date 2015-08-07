@@ -103,5 +103,11 @@ OpenList<Entry> *StandardScalarOpenList<Entry>::_parse(OptionParser &parser) {
     else
         return new StandardScalarOpenList<Entry>(opts);
 }
+template<class Entry>
+int StandardScalarOpenList<Entry>::frontier_size() {
+    auto it = buckets.begin();
+    assert(it != buckets.end());
+    return it->second.size();
+}
 
 #endif
