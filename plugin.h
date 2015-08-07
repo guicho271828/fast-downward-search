@@ -3,7 +3,7 @@
 
 #include "open_lists/alternation_open_list.h"
 #include "open_lists/bucket_open_list.h"
-#include "open_lists/pareto_open_list.h"
+// #include "open_lists/pareto_open_list.h"
 #include "open_lists/standard_scalar_open_list.h"
 #include "open_lists/tiebreaking_open_list.h"
 
@@ -50,8 +50,8 @@ public:
             "tiebreaking", TieBreakingOpenList<Entry>::_parse);
         Registry<OpenList<Entry > *>::instance()->register_object(
             "alt", AlternationOpenList<Entry>::_parse);
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "pareto", ParetoOpenList<Entry>::_parse);
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "pareto", ParetoOpenList<Entry>::_parse); */
     }
 };
 

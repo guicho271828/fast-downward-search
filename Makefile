@@ -89,7 +89,6 @@ HEADERS = \
           open_lists/alternation_open_list.h \
           open_lists/bucket_open_list.h \
           open_lists/open_list.h \
-          open_lists/pareto_open_list.h \
           open_lists/standard_scalar_open_list.h \
           open_lists/tiebreaking_open_list.h \
           multi_search.h
