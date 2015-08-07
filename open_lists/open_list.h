@@ -126,6 +126,8 @@ public:
     virtual bool is_dead_end(EvaluationContext &eval_context) const = 0;
     virtual bool is_reliable_dead_end(
         EvaluationContext &eval_context) const = 0;
+
+    virtual int frontier_size() const = 0;
 };
 
 #include "open_list.cc"
