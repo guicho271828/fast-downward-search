@@ -23,6 +23,7 @@ class StandardScalarOpenList : public OpenList<Entry> {
 
     std::map<int, Bucket> buckets;
     int size;
+    bool fifo;
 
     ScalarEvaluator *evaluator;
 

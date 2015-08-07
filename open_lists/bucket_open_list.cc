@@ -11,10 +11,10 @@ using namespace std;
 
 template<class Entry>
 BucketOpenList<Entry>::BucketOpenList(const Options &opts)
-    : OpenList<Entry>(opts.get<bool>("pref_only"),
-                      opts.get<bool>("fifo")),
+    : OpenList<Entry>(opts.get<bool>("pref_only")),
       lowest_bucket(numeric_limits<int>::max()),
       size(0),
+      fifo(opts.get<ScalarEvaluator *>("fifo")),
       evaluator(opts.get<ScalarEvaluator *>("eval")) {
 }
 

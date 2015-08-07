@@ -21,7 +21,7 @@ class BucketOpenList : public OpenList<Entry> {
     std::vector<Bucket> buckets;
     mutable int lowest_bucket;
     int size;
-
+    bool fifo;
     ScalarEvaluator *evaluator;
 
 protected:

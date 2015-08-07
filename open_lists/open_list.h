@@ -23,10 +23,9 @@ protected:
                               const Entry &entry) = 0;
 
 public:
-    explicit OpenList(bool preferred_only = false, bool fifo = true);
+    explicit OpenList(bool preferred_only = false);
     virtual ~OpenList() = default;
 
-    const bool fifo;
     /*
       Insert an entry into the open list.
 

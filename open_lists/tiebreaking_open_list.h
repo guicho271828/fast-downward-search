@@ -19,6 +19,7 @@ class TieBreakingOpenList : public OpenList<Entry> {
 
     std::map<const std::vector<int>, Bucket> buckets;
     int size;
+    bool fifo;
 
     std::vector<ScalarEvaluator *> evaluators;
     /*
@@ -39,7 +40,6 @@ public:
     TieBreakingOpenList(const std::vector<ScalarEvaluator *> &evals,
                         bool preferred_only, bool unsafe_pruning);
     virtual ~TieBreakingOpenList() override = default;
-
     virtual Entry remove_min(std::vector<int> *key = 0) override;
     virtual bool empty() const override;
     virtual void clear() override;

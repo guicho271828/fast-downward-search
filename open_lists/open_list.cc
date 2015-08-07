@@ -5,9 +5,8 @@
 
 
 template<class Entry>
-OpenList<Entry>::OpenList(bool only_preferred, bool fifo)
-  : only_preferred(only_preferred),
-    fifo (fifo) {
+OpenList<Entry>::OpenList(bool only_preferred)
+  : only_preferred(only_preferred) {
 }
 
 template<class Entry>

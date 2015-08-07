@@ -12,10 +12,10 @@ using namespace std;
 
 template<class Entry>
 StandardScalarOpenList<Entry>::StandardScalarOpenList(const Options &opts)
-  : OpenList<Entry>(opts.get<bool>("pref_only"),
-                    opts.get<bool>("fifo")),
-      size(0),
-      evaluator(opts.get<ScalarEvaluator *>("eval")) {
+  : OpenList<Entry>(opts.get<bool>("pref_only")),
+    size(0),
+    fifo(opts.get<bool>("fifo")),
+    evaluator(opts.get<ScalarEvaluator *>("eval")) {
 }
 
 template<class Entry>

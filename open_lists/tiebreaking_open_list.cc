@@ -22,7 +22,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
     parser.add_option<bool>(
         "unsafe_pruning",
         "allow unsafe pruning when the main evaluator regards a state a dead end",
-        "true");
+        "false");
     parser.add_option<bool>("fifo", "insert in fifo order", "true");
     Options opts = parser.parse();
     if (parser.dry_run())
@@ -33,8 +33,8 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
 
 template<class Entry>
 TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
-    : OpenList<Entry>(opts.get<bool>("pref_only"),
-                      opts.get<bool>("fifo")),
+    : OpenList<Entry>(opts.get<bool>("pref_only")),
+      fifo(opts.get<bool>("fifo")),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
 }
