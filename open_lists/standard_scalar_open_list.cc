@@ -51,8 +51,10 @@ Entry StandardScalarOpenList<Entry>::remove_min(vector<int> *key) {
     assert(!bucket.empty());
     Entry result = bucket.front();
     bucket.pop_front();
-    if (bucket.empty())
+    if (bucket.empty()){
         buckets.erase(it);
+        cout << "frontier_size=" << frontier_size() << " evals=[" << buckets.begin()->first << "]" << endl;
+    }
     --size;
     return result;
 }
@@ -106,8 +108,10 @@ OpenList<Entry> *StandardScalarOpenList<Entry>::_parse(OptionParser &parser) {
 template<class Entry>
 int StandardScalarOpenList<Entry>::frontier_size() {
     auto it = buckets.begin();
-    assert(it != buckets.end());
-    return it->second.size();
+    if (it == buckets.end())
+        return 0;
+    else
+        return it->second.size();
 }
 
 #endif

@@ -47,6 +47,7 @@ Entry BucketOpenList<Entry>::remove_min(vector<int> *key) {
     }
     Entry result = buckets[lowest_bucket].front();
     buckets[lowest_bucket].pop_front();
+    cout << "frontier_size=" << frontier_size() << " evals=[" << lowest_bucket << "]" << endl;
     return result;
 }
 

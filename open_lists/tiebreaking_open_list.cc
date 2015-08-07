@@ -76,8 +76,10 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
     }
     Entry result = it->second.front();
     it->second.pop_front();
-    if (it->second.empty())
+    if (it->second.empty()){
         buckets.erase(it);
+        cout << "frontier_size=" << frontier_size() << " evals=" << buckets.begin()->first << endl;
+    }
     return result;
 }
 
@@ -136,8 +138,10 @@ bool TieBreakingOpenList<Entry>::is_reliable_dead_end(
 template<class Entry>
 int TieBreakingOpenList<Entry>::frontier_size() {
     auto it = buckets.begin();
-    assert(it != buckets.end());
-    return it->second.size();
+    if (it == buckets.end())
+        return 0;
+    else
+        return it->second.size();
 }
 
 
