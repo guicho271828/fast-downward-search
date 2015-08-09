@@ -78,7 +78,8 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
     it->second.pop_front();
     if (it->second.empty()){
         buckets.erase(it);
-        cout << "frontier_size=" << frontier_size() << " evals=" << buckets.begin()->first << endl;
+        if (OpenList<Entry>::emit_frontier)
+            cout << "frontier_size=" << frontier_size() << " evals=" << buckets.begin()->first << endl;
     }
     return result;
 }

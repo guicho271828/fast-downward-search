@@ -12,7 +12,7 @@ using namespace std;
 
 template<class Entry>
 StandardScalarOpenList<Entry>::StandardScalarOpenList(const Options &opts)
-  : OpenList<Entry>(opts.get<bool>("pref_only")),
+  : OpenList<Entry>(opts.get<bool>("pref_only"), opts.get<bool>("emit_frontier")),
     size(0),
     fifo(opts.get<bool>("fifo")),
     evaluator(opts.get<ScalarEvaluator *>("eval")) {
@@ -53,7 +53,8 @@ Entry StandardScalarOpenList<Entry>::remove_min(vector<int> *key) {
     bucket.pop_front();
     if (bucket.empty()){
         buckets.erase(it);
-        cout << "frontier_size=" << frontier_size() << " evals=[" << buckets.begin()->first << "]" << endl;
+        if (OpenList<Entry>::emit_frontier)
+            cout << "frontier_size=" << frontier_size() << " evals=[" << buckets.begin()->first << "]" << endl;
     }
     --size;
     return result;

@@ -11,7 +11,7 @@ using namespace std;
 
 template<class Entry>
 BucketOpenList<Entry>::BucketOpenList(const Options &opts)
-    : OpenList<Entry>(opts.get<bool>("pref_only")),
+    : OpenList<Entry>(opts.get<bool>("pref_only"), opts.get<bool>("emit_frontier")),
       lowest_bucket(numeric_limits<int>::max()),
       size(0),
       fifo(opts.get<ScalarEvaluator *>("fifo")),
@@ -47,7 +47,8 @@ Entry BucketOpenList<Entry>::remove_min(vector<int> *key) {
     }
     Entry result = buckets[lowest_bucket].front();
     buckets[lowest_bucket].pop_front();
-    cout << "frontier_size=" << frontier_size() << " evals=[" << lowest_bucket << "]" << endl;
+    if (OpenList<Entry>::emit_frontier)
+        cout << "frontier_size=" << frontier_size() << " evals=[" << lowest_bucket << "]" << endl;
     return result;
 }
 

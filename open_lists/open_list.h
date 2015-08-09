@@ -23,7 +23,7 @@ protected:
                               const Entry &entry) = 0;
 
 public:
-    explicit OpenList(bool preferred_only = false);
+    explicit OpenList(bool preferred_only = false, bool emit_frontier = false);
     virtual ~OpenList() = default;
 
     /*
@@ -127,6 +127,7 @@ public:
         EvaluationContext &eval_context) const = 0;
 
     virtual int frontier_size() { return 0 ;};
+    const bool emit_frontier;
 };
 
 #include "open_list.cc"

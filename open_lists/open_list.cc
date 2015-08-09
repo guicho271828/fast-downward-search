@@ -5,8 +5,9 @@
 
 
 template<class Entry>
-OpenList<Entry>::OpenList(bool only_preferred)
-  : only_preferred(only_preferred) {
+OpenList<Entry>::OpenList(bool only_preferred, bool emit_frontier)
+    : only_preferred(only_preferred),
+      emit_frontier(emit_frontier){
 }
 
 template<class Entry>
