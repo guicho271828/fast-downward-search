@@ -43,8 +43,6 @@ class OpenTree : public AbstractTieBreakingOpenList<Entry> {
     map<Key,int> counts; // for frontier_size.
     int size = 0;
     mt19937 gen = mt19937(1);
-    TreeNode<Entry>* search(TreeNode<Entry>* tree);
-    const Entry* search_and_cleanup(TreeNode<Entry>* tree);
 
     PerStateInformation<TreeNode<Entry>*>* get_tree(Key &key);
     
@@ -61,6 +59,8 @@ public:
     virtual bool empty() const override;
     virtual void clear() override;
     virtual int frontier_size() override;
+    virtual TreeNode<Entry>* search(TreeNode<Entry>* tree);
+    const Entry* search_and_cleanup(TreeNode<Entry>* tree);
 
     static OpenList<Entry> *_parse(OptionParser &parser);
 };
