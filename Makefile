@@ -90,7 +90,9 @@ HEADERS = \
           open_lists/bucket_open_list.h \
           open_lists/open_list.h \
           open_lists/standard_scalar_open_list.h \
+          open_lists/abstract_tiebreaking_open_list.h \
           open_lists/tiebreaking_open_list.h \
+          open_lists/open_tree.h \
           multi_search.h
           # \
           # lp_internals.h \

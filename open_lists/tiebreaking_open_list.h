@@ -1,20 +1,10 @@
 #ifndef OPEN_LISTS_TIEBREAKING_OPEN_LIST_H
 #define OPEN_LISTS_TIEBREAKING_OPEN_LIST_H
 
-#include "open_list.h"
-
-#include <deque>
-#include <map>
-#include <utility>
-#include <vector>
-
-class OptionParser;
-class Options;
-class ScalarEvaluator;
-
+#include "abstract_tiebreaking_open_list.h"
 
 template<class Entry>
-class TieBreakingOpenList : public OpenList<Entry> {
+class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef std::deque<Entry> Bucket;
 
     std::map<const std::vector<int>, Bucket> buckets;

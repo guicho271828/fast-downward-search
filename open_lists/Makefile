@@ -1,3 +1,3 @@
 
 all:
-	$(MAKE) -C ..
+	$(MAKE) -C .. debug

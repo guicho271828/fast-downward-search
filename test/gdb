@@ -1,0 +1,3 @@
+
+
+--heuristic 'h=lmcut()' --search 'eager(tree([sum([g(),h]),h]))' < test/output

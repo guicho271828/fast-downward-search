@@ -34,7 +34,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
 
 template<class Entry>
 TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
-    : OpenList<Entry>(opts.get<bool>("pref_only"),opts.get<bool>("frontier")),
+    : AbstractTieBreakingOpenList<Entry>(opts),
       fifo(opts.get<bool>("fifo")),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
@@ -51,11 +51,8 @@ TieBreakingOpenList<Entry>::TieBreakingOpenList(
 template<class Entry>
 void TieBreakingOpenList<Entry>::do_insertion(
     EvaluationContext &eval_context, const Entry &entry) {
-    vector<int> key;
-    key.reserve(evaluators.size());
-    for (ScalarEvaluator *evaluator : evaluators)
-        key.push_back(eval_context.get_heuristic_value_or_infinity(evaluator));
-
+    auto key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
+    
     if (this->fifo)
       buckets[key].push_back(entry);
     else
