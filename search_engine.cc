@@ -35,7 +35,8 @@ void SearchEngine::print_statistics() const {
 
 EvaluationContext SearchEngine::get_context(const GlobalState &state,
                                             int g, bool is_preferred,
-                                            SearchStatistics *statistics){
+                                            SearchStatistics *statistics,
+                                            SearchSpace *space){
     // read the heuristic cache
     HeuristicCache* cache = (*hcaches)[state];
     if (cache == nullptr){
@@ -43,7 +44,7 @@ EvaluationContext SearchEngine::get_context(const GlobalState &state,
         (*hcaches)[state] = cache;
         statistics->inc_evaluated_states();
     }
-    return EvaluationContext(*cache,g,is_preferred,statistics);
+    return EvaluationContext(*cache,g,is_preferred,statistics,space);
 }
 
 

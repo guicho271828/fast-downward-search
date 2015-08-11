@@ -3,6 +3,7 @@
 
 #include "evaluation_result.h"
 #include "heuristic_cache.h"
+#include "search_space.h"
 
 #include <unordered_map>
 
@@ -51,6 +52,7 @@ class EvaluationContext {
     int g_value;
     bool preferred;
     SearchStatistics *statistics;
+    SearchSpace *space;
 
     static const int INVALID = -1;
 
@@ -63,13 +65,15 @@ public:
     */
     EvaluationContext(
         HeuristicCache &cache, int g_value, bool is_preferred,
-        SearchStatistics *statistics);
+        SearchStatistics *statistics,
+        SearchSpace *space);
 
     ~EvaluationContext() = default;
 
     const EvaluationResult &get_result(ScalarEvaluator *heur);
     const HeuristicCache &get_cache() const;
     const GlobalState &get_state() const;
+    const SearchSpace &get_space() const;
     int get_g_value() const;
     bool is_preferred() const;
 

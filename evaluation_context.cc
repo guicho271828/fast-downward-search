@@ -11,11 +11,13 @@ using namespace std;
 
 EvaluationContext::EvaluationContext(
     HeuristicCache &cache, int g_value, bool is_preferred,
-    SearchStatistics *statistics)
+    SearchStatistics *statistics,
+    SearchSpace *space)
     : cache(&cache),
       g_value(g_value),
       preferred(is_preferred),
-      statistics(statistics) {
+      statistics(statistics),
+      space(space){
 }
 
 const EvaluationResult &EvaluationContext::get_result(ScalarEvaluator *heur) {
@@ -38,6 +40,10 @@ const HeuristicCache &EvaluationContext::get_cache() const {
 
 const GlobalState &EvaluationContext::get_state() const {
     return (*cache).get_state();
+}
+
+const SearchSpace &EvaluationContext::get_space() const {
+    return *space;
 }
 
 int EvaluationContext::get_g_value() const {

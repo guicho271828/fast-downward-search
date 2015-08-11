@@ -47,7 +47,8 @@ void EagerSearch::initialize() {
   const GlobalState &initial_state = g_initial_state();
   // Note: we consider the initial state as reached by a preferred
   // operator.
-  EvaluationContext eval_context = get_context(initial_state, 0, true, &statistics);
+  EvaluationContext eval_context =
+      get_context(initial_state, 0, true, &statistics, &search_space);
 
   if (open_list->is_dead_end(eval_context)) {
     cout << "Initial state is a dead end." << endl;
@@ -84,7 +85,7 @@ SearchStatus EagerSearch::step() {
   vector<const GlobalOperator *> applicable_ops;
   set<const GlobalOperator *> preferred_ops;
   g_successor_generator->generate_applicable_ops(s, applicable_ops);
-  EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics);
+  EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics, &search_space);
   for (Heuristic *heur : preferred_operator_heuristics) {
     if (!eval_context.is_heuristic_infinite(heur)) {
       auto preferred = eval_context.get_preferred_operators(heur);
@@ -126,8 +127,7 @@ void EagerSearch::per_node_new(GlobalState succ,
     EvaluationContext eval_context =
         get_context(succ,
                      node.get_g() + get_adjusted_cost(*op),
-                     is_preferred,
-                     &statistics);
+                     is_preferred, &statistics, &search_space);
 
     if (open_list->is_dead_end(eval_context)) {
         succ_node.mark_as_dead_end();
@@ -152,7 +152,8 @@ void EagerSearch::per_node_reopen(GlobalState succ,
     if (succ_node.is_closed())
         statistics.inc_reopened();
     succ_node.reopen(node, op);
-    EvaluationContext eval_context = get_context(succ, succ_node.get_g(), is_preferred, &statistics);
+    EvaluationContext eval_context =
+        get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
     open_list->insert(eval_context, succ.get_id());
 }
 
