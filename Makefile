@@ -93,6 +93,7 @@ HEADERS = \
           open_lists/abstract_tiebreaking_open_list.h \
           open_lists/tiebreaking_open_list.h \
           open_lists/open_tree.h \
+          open_lists/open_tree2.h \
           multi_search.h
           # \
           # lp_internals.h \
