@@ -56,7 +56,11 @@ public:
     SearchNode get_node(const GlobalState &state);
     void trace_path(const GlobalState &goal_state,
                     std::vector<const GlobalOperator *> &path) const;
-
+    void trace_path(const GlobalState &goal_state,
+                    std::vector<const SearchNodeInfo *> &path) const;
+    void trace_path(const GlobalState &goal_state,
+                    std::vector<GlobalState> &path) const;
+    /* std::vector<StateID>* trace_path_states(const GlobalState &goal_state) const; */
     void dump() const;
     void print_statistics() const;
 };

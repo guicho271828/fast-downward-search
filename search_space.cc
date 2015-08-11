@@ -132,6 +132,40 @@ void SearchSpace::trace_path(const GlobalState &goal_state,
     reverse(path.begin(), path.end());
 }
 
+void SearchSpace::trace_path(const GlobalState &goal_state,
+                             vector<const SearchNodeInfo *> &path) const {
+    GlobalState current_state = goal_state;
+    assert(path.empty());
+    for (;;) {
+        const SearchNodeInfo &info = search_node_infos[current_state];
+        const GlobalOperator *op = info.creating_operator;
+        if (op == 0) {
+            assert(info.parent_state_id == StateID::no_state);
+            break;
+        }
+        path.push_back(&info);
+        current_state = g_state_registry->lookup_state(info.parent_state_id);
+    }
+    reverse(path.begin(), path.end());
+}
+
+void SearchSpace::trace_path(const GlobalState &goal_state,
+                             vector<GlobalState> &path) const {
+    GlobalState current_state = goal_state;
+    assert(path.empty());
+    for (;;) {
+        path.push_back(current_state);
+        const SearchNodeInfo &info = search_node_infos[current_state];
+        const GlobalOperator *op = info.creating_operator;
+        if (op == 0) {
+            assert(info.parent_state_id == StateID::no_state);
+            break;
+        }
+        current_state = g_state_registry->lookup_state(info.parent_state_id);
+    }
+    reverse(path.begin(), path.end());
+}
+
 void SearchSpace::dump() const {
     for (PerStateInformation<SearchNodeInfo>::const_iterator it =
              search_node_infos.begin(g_state_registry);
