@@ -7,7 +7,7 @@ using namespace std;
 
 template<class Entry>
 class OpenDTree : public OpenTree<Entry> {
-    
+    map<TreeNode<Entry>*,int> count_cache;
 protected:
 
 public:
@@ -15,6 +15,7 @@ public:
     virtual ~OpenDTree() override = default;
     static OpenList<Entry> *_parse(OptionParser &parser);
     virtual TreeNode<Entry>* search(TreeNode<Entry>* tree) override;
+    virtual const Entry* search_and_cleanup(TreeNode<Entry>* tree) override;
     int count_branch(TreeNode<Entry>* tree);
 };
 

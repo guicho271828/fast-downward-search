@@ -12,13 +12,17 @@ OpenDTree<Entry>::OpenDTree(const Options &opts)
 }
 
 template<class Entry>
+const Entry* OpenDTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
+    count_cache.clear();
+    return OpenTree<Entry>::search_and_cleanup(tree);
+}
+
+template<class Entry>
 TreeNode<Entry>* OpenDTree<Entry>::search(TreeNode<Entry>* tree) {
     if (tree->entry){
-        // TODO: if there are children like root-help-help-open(1)-open(2),
-        // is it necessary to open (1) and (2) at random?
+        assert(tree->children.empty());
         return tree;
-    }
-    else{
+    } else{
         assert(!tree->children.empty());
         TreeNode<Entry>* min_b = nullptr;
         int min = INT_MAX;
@@ -36,7 +40,12 @@ TreeNode<Entry>* OpenDTree<Entry>::search(TreeNode<Entry>* tree) {
 
 template<class Entry>
 int OpenDTree<Entry>::count_branch(TreeNode<Entry>* tree) {
+    auto found = count_cache.find(tree);
+    if(found != count_cache.end()) {
+        return found->second;
+    }
     if (tree->entry){
+        count_cache[tree] = 1;
         return 1;
     } else{
         assert(!tree->children.empty());
@@ -44,6 +53,7 @@ int OpenDTree<Entry>::count_branch(TreeNode<Entry>* tree) {
         for ( auto branch : tree->children) {
             count += count_branch(branch);
         }
+        count_cache[tree] = count;
         return count;
     }
 }
