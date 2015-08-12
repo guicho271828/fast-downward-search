@@ -3,12 +3,15 @@
 
 #include "open_tree2.h"
 #include <climits>
+#include "../option_parser.h"
 
 using namespace std;
 
 template<class Entry>
 OpenDTree<Entry>::OpenDTree(const Options &opts)
-    : OpenTree<Entry>(opts) {
+    : OpenTree<Entry>(opts),
+      count_helpers(opts.get<bool>("helpers")),
+      count_open(opts.get<bool>("open")) {
 }
 
 template<class Entry>
@@ -45,11 +48,12 @@ int OpenDTree<Entry>::count_branch(TreeNode<Entry>* tree) {
         return found->second;
     }
     if (tree->entry){
-        count_cache[tree] = 1;
-        return 1;
+        int count = count_open ? 1 : 0;
+        count_cache[tree] = count;
+        return count;
     } else{
         assert(!tree->children.empty());
-        int count = 0;
+        int count = count_helpers ? 1 : 0;
         for ( auto branch : tree->children) {
             count += count_branch(branch);
         }
@@ -57,7 +61,6 @@ int OpenDTree<Entry>::count_branch(TreeNode<Entry>* tree) {
         return count;
     }
 }
-
 
 template<class Entry>
 OpenList<Entry> *OpenDTree<Entry>::_parse(OptionParser &parser) {
@@ -71,7 +74,13 @@ OpenList<Entry> *OpenDTree<Entry>::_parse(OptionParser &parser) {
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
+    parser.add_option<bool>("helpers", "Count the helper nodes", "false");
+    parser.add_option<bool>("open", "Count the open nodes", "true");
     Options opts = parser.parse();
+    if ((!opts.get<bool>("helpers")) && (!opts.get<bool>("open"))){
+        throw ArgError("either helpers or open should be true");
+    }
+
     if (parser.dry_run())
         return 0;
     else

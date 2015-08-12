@@ -8,6 +8,8 @@ using namespace std;
 template<class Entry>
 class OpenDTree : public OpenTree<Entry> {
     map<TreeNode<Entry>*,int> count_cache;
+    bool count_helpers = false;
+    bool count_open = true;
 protected:
 
 public:
