@@ -86,8 +86,8 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
     auto it = trees.begin();
     assert(it != trees.end());
 
-    auto tree = it->second;
-    auto root = (*tree)[g_initial_state()];
+    auto db = it->second;
+    auto root = (*db)[g_initial_state()];
     assert(root);
 
     --size;
