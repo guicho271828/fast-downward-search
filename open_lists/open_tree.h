@@ -50,7 +50,7 @@ template<class Entry>
 using DB = PerStateInformation<TreeNode<Entry>*> ;
 
 template<class Entry>
-void cleanup(TreeNode<Entry>* tree);
+void cleanup(TreeNode<Entry>* tree, DB<Entry>* db);
 
 template<class Entry>
 class OpenTree : public AbstractTieBreakingOpenList<Entry> {
@@ -76,7 +76,7 @@ public:
     virtual void clear() override;
     virtual int frontier_size() override;
     virtual TreeNode<Entry>* search(TreeNode<Entry>* tree);
-    virtual const Entry search_and_cleanup(TreeNode<Entry>* tree);
+    virtual const Entry search_and_cleanup(TreeNode<Entry>* tree, DB<Entry>* db);
 
     static OpenList<Entry> *_parse(OptionParser &parser);
 };

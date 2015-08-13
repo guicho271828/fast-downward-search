@@ -17,7 +17,7 @@ public:
     virtual ~OpenDTree() override = default;
     static OpenList<Entry> *_parse(OptionParser &parser);
     virtual TreeNode<Entry>* search(TreeNode<Entry>* tree) override;
-    virtual const Entry search_and_cleanup(TreeNode<Entry>* tree) override;
+    virtual const Entry search_and_cleanup(TreeNode<Entry>* tree, DB<Entry>* db) override;
     int count_branch(TreeNode<Entry>* tree);
 };
 
