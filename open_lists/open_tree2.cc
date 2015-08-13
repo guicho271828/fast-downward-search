@@ -12,6 +12,9 @@ OpenDTree<Entry>::OpenDTree(const Options &opts)
     : OpenTree<Entry>(opts),
       count_helpers(opts.get<bool>("helpers")),
       count_open(opts.get<bool>("open")) {
+    if ((!opts.get<bool>("helpers")) && (!opts.get<bool>("open"))){
+        throw ArgError("either helpers or open should be true");
+    }
 }
 
 template<class Entry>
@@ -77,9 +80,6 @@ OpenList<Entry> *OpenDTree<Entry>::_parse(OptionParser &parser) {
     parser.add_option<bool>("helpers", "Count the helper nodes", "false");
     parser.add_option<bool>("open", "Count the open nodes", "true");
     Options opts = parser.parse();
-    if ((!opts.get<bool>("helpers")) && (!opts.get<bool>("open"))){
-        throw ArgError("either helpers or open should be true");
-    }
 
     if (parser.dry_run())
         return 0;
