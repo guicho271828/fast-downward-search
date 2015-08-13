@@ -8,3 +8,7 @@ downward-*
 TAGS
 /Makefile.depend
 /sas_plan
+/GPATH
+/GRTAGS
+/GSYMS
+/GTAGS
