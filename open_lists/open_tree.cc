@@ -38,9 +38,9 @@ void OpenTree<Entry>::do_insertion(
     auto key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
     auto db = get_tree(key);
     // cout << "For key " << key << endl ;
+
     TreeNode<Entry>* parent = nullptr;
     TreeNode<Entry>* node   = nullptr;
-
     for (const GlobalState state : path){
         if (! parent){
             // first iteration
@@ -58,11 +58,25 @@ void OpenTree<Entry>::do_insertion(
             parent = node;
         }
     }
-    (*db)[current]->entry = new Entry(entry); // freed in remove_min
+    node = (*db)[current];
+    if (! node->get_entry()){
+        node->set_entry(new Entry(entry)); // freed in remove_min
+    }
     // cout << "inserting " << entry << endl;
     ++size;
     if (OpenList<Entry>::emit_frontier)
         counts[key]++;
+}
+
+template<class Entry>
+TreeNode<Entry>* get_node(DB<Entry>* db, const GlobalState &state){
+    auto result = (*db)[state];
+    if (! result){
+        result = new TreeNode<Entry>(state); // freed in cleanup()
+        // cout << "generated node for state " << state.get_id() << " @ " << result << endl;
+        (*db)[state] = result;
+    }
+    return result;
 }
 
 template<class Entry>
@@ -116,11 +130,10 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
 template<class Entry>
 const Entry OpenTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
     auto node = search(tree);
-    auto result = *(node->entry);
+    auto result = *(node->get_entry()); // move
     // assert(node->children.empty());
     // not true;; root-help-help-open-open is possible
-    delete node->entry;
-    node->entry = nullptr;
+    node->delete_entry();
     // becomes    root-help-help-help-open.
     // still somewhat fifo
     cleanup(node);
@@ -129,7 +142,7 @@ const Entry OpenTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
 
 template<class Entry>
 TreeNode<Entry>* OpenTree<Entry>::search(TreeNode<Entry>* tree) {
-    if (tree->entry){
+    if (tree->get_entry()){
         // TODO: if there are children like root-help-help-open(1)-open(2),
         // is it necessary to open (1) and (2) at random?
         return tree;
@@ -147,7 +160,8 @@ TreeNode<Entry>* OpenTree<Entry>::search(TreeNode<Entry>* tree) {
 template<class Entry>
 void cleanup(TreeNode<Entry>* tree) {
     if (tree->parent // not a root node
-        && tree->children.empty()){
+        && tree->children.empty()
+        && !(tree->get_entry())){
         tree->parent->children.erase(tree);
         cleanup(tree->parent);
     }

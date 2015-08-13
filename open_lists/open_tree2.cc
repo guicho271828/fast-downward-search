@@ -22,7 +22,7 @@ const Entry OpenDTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
 
 template<class Entry>
 TreeNode<Entry>* OpenDTree<Entry>::search(TreeNode<Entry>* tree) {
-    if (tree->entry){
+    if (tree->get_entry()){
         assert(tree->children.empty());
         return tree;
     } else{
@@ -47,7 +47,7 @@ int OpenDTree<Entry>::count_branch(TreeNode<Entry>* tree) {
     if(found != count_cache.end()) {
         return found->second;
     }
-    if (tree->entry){
+    if (tree->get_entry()){
         int count = count_open ? 1 : 0;
         count_cache[tree] = count;
         return count;

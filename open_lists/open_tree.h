@@ -11,12 +11,26 @@ class TreeNode {
     // No implementation to forbid copies and assignment
     TreeNode(const TreeNode<Entry> &);
     TreeNode &operator=(const TreeNode<Entry> &);
+    Entry* entry;
 public:
-    explicit TreeNode(const Entry* entry) : entry(entry){};
-    ~TreeNode();
-    set<TreeNode*> children;
+    explicit TreeNode(const GlobalState &state) : entry(nullptr), state(state){};
+    ~TreeNode(){
+        /* assert(!parent); */
+        assert(!entry);
+        assert(children.empty());
+    };
     TreeNode* parent = nullptr;
-    const Entry* entry = nullptr;
+    /* void set_parent(TreeNode* parent2){ assert(!parent); parent = parent2; } */
+    Entry* get_entry(){ return entry; };
+    void set_entry(Entry* entry2){ assert(!entry); entry = entry2; };
+    void delete_entry(){
+        if (entry){
+            delete entry;
+            entry = nullptr;
+        }
+    };
+    set<TreeNode*> children;
+    const GlobalState state;
     void dump(int level = 0){
         cout << ";; ";
         for (int i = 0; i < level; i++)
