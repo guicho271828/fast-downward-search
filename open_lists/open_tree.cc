@@ -110,16 +110,16 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
             }
         }
     }
-    return *result;
+    return result;
 }
 
 template<class Entry>
-const Entry* OpenTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
+const Entry OpenTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
     auto node = search(tree);
-    auto result = node->entry;
-    assert(result);
+    auto result = *(node->entry);
     // assert(node->children.empty());
     // not true;; root-help-help-open-open is possible
+    delete node->entry;
     node->entry = nullptr;
     // becomes    root-help-help-help-open.
     // still somewhat fifo

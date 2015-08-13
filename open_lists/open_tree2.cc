@@ -15,7 +15,7 @@ OpenDTree<Entry>::OpenDTree(const Options &opts)
 }
 
 template<class Entry>
-const Entry* OpenDTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
+const Entry OpenDTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree) {
     count_cache.clear();
     return OpenTree<Entry>::search_and_cleanup(tree);
 }

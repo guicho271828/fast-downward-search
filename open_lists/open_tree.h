@@ -60,7 +60,7 @@ public:
     virtual void clear() override;
     virtual int frontier_size() override;
     virtual TreeNode<Entry>* search(TreeNode<Entry>* tree);
-    virtual const Entry* search_and_cleanup(TreeNode<Entry>* tree);
+    virtual const Entry search_and_cleanup(TreeNode<Entry>* tree);
 
     static OpenList<Entry> *_parse(OptionParser &parser);
 };
