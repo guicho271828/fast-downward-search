@@ -17,7 +17,7 @@ OpenTree<Entry>::OpenTree(const Options &opts)
 }
 
 template<class Entry>
-TreeNode<Entry>* get_node(PerStateInformation<TreeNode<Entry>*> *db, const GlobalState &state){
+TreeNode<Entry>* get_node(DB<Entry>* db, const GlobalState &state){
     auto result = (*db)[state];
     if (! result){
         result = new TreeNode<Entry>(nullptr);
@@ -58,7 +58,7 @@ void OpenTree<Entry>::do_insertion(
             parent = node;
         }
     }
-    (*db)[current]->entry = new Entry(entry);
+    (*db)[current]->entry = new Entry(entry); // freed in remove_min
     // cout << "inserting " << entry << endl;
     ++size;
     if (OpenList<Entry>::emit_frontier)
@@ -66,13 +66,13 @@ void OpenTree<Entry>::do_insertion(
 }
 
 template<class Entry>
-PerStateInformation<TreeNode<Entry>*>* OpenTree<Entry>::get_tree(Key &key){
+DB<Entry>* OpenTree<Entry>::get_tree(Key &key){
     auto ptr = trees[key];
     if (ptr){
         return ptr;
     }else{
         // cout << "generating db for key " << key << endl;
-        ptr = new PerStateInformation<TreeNode<Entry>*>(nullptr);
+        ptr = new DB<Entry>(nullptr);
         trees[key] = ptr;
         return ptr;
     }

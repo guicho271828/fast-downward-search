@@ -33,13 +33,15 @@ public:
 };
 
 template<class Entry>
+using DB = PerStateInformation<TreeNode<Entry>*> ;
+
+template<class Entry>
 void cleanup(TreeNode<Entry>* tree);
 
 template<class Entry>
 class OpenTree : public AbstractTieBreakingOpenList<Entry> {
     typedef vector<int> Key;
-
-    map<Key,PerStateInformation<TreeNode<Entry>*>*> trees;
+    map<Key,DB<Entry>*> trees;
     map<Key,int> counts; // for frontier_size.
     int size = 0;
     mt19937 gen = mt19937(1);
