@@ -202,9 +202,8 @@ static SearchEngine *_parse(OptionParser &parser) {
   parser.document_synopsis("Eager best-first search", "");
 
   parser.add_option<OpenList<StateID> *>("open", "open list");
-  parser.add_list_option<Heuristic *>(
-                                      "preferred",
-                                      "use preferred operators of these heuristics", "[]");
+  parser.add_list_option<Heuristic *>("preferred", "use preferred operators of these heuristics", "[]");
+  parser.add_option<bool>("reopen_closed", "This option is ignored.", "true");
   SearchEngine::add_options_to_parser(parser);
   Options opts = parser.parse();
 
