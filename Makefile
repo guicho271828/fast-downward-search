@@ -54,7 +54,6 @@ HEADERS = \
           global_operator.h \
           global_state.h \
           globals.h \
-          heuristic_cache.h \
           heuristic.h \
           int_packer.h \
           max_evaluator.h \

@@ -12,7 +12,6 @@ class Options;
 #include "search_progress.h"
 #include "search_space.h"
 #include "search_statistics.h"
-#include "heuristic_cache.h"
 #include "per_state_information.h"
 
 enum SearchStatus {IN_PROGRESS, TIMEOUT, FAILED, SOLVED};

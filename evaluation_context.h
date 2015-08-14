@@ -2,8 +2,8 @@
 #define EVALUATION_CONTEXT_H
 
 #include "evaluation_result.h"
-#include "heuristic_cache.h"
 #include "search_space.h"
+#include "heuristic.h"
 
 #include <unordered_map>
 
