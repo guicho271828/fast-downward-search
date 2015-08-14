@@ -39,7 +39,7 @@ const HeuristicCache &EvaluationContext::get_cache() const {
 }
 
 const GlobalState &EvaluationContext::get_state() const {
-    return (*cache).get_state();
+    return cache->get_state();
 }
 
 const SearchSpace &EvaluationContext::get_space() const {

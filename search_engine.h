@@ -59,6 +59,7 @@ public:
     int get_bound() {return bound; }
     static void add_options_to_parser(OptionParser &parser);
 
+    /* this is a pointer (for MultiSearch) */
     PerStateInformation<HeuristicCache *>* hcaches;
 };
 
