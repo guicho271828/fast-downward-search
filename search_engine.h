@@ -43,10 +43,6 @@ public:
     SearchEngine(const Options &opts);
     virtual ~SearchEngine();
     virtual void initialize() {};
-    virtual void initialize(PerStateInformation<HeuristicCache*>* other_hcaches){
-        hcaches = other_hcaches;
-        initialize();
-    };
     virtual SearchStatus step() = 0;
     virtual void print_statistics() const;
     virtual void save_plan_if_necessary() const;
@@ -58,9 +54,6 @@ public:
     void set_bound(int b) {bound = b; }
     int get_bound() {return bound; }
     static void add_options_to_parser(OptionParser &parser);
-
-    /* this is a pointer (for MultiSearch) */
-    PerStateInformation<HeuristicCache *>* hcaches;
 };
 
 
