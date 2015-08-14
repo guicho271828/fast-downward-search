@@ -21,7 +21,7 @@ MultiSearch::MultiSearch(const Options &opts)
 
 void MultiSearch::initialize() {
     for (auto engine : engines){
-        engine->initialize(hcaches);
+        engine->initialize();
     }
 }
 
