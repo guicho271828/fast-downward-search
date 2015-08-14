@@ -4,6 +4,7 @@
 #include "operator_cost.h"
 #include "scalar_evaluator.h"
 #include "task_proxy.h"
+#include "per_state_information.h"
 
 #include <memory>
 #include <vector>
@@ -17,6 +18,7 @@ class TaskProxy;
 class Heuristic : public ScalarEvaluator {
     std::string description;
     bool initialized;
+    PerStateInformation<int>* cache;
 
     /*
       TODO: We might want to get rid of the preferred_operators
@@ -36,7 +38,7 @@ protected:
     // Use task_proxy to access task information.
     TaskProxy task_proxy;
     OperatorCost cost_type;
-    enum {DEAD_END = -1};
+    enum {DEAD_END = -1, UNINITIALIZED = -2};
     virtual void initialize() {}
     // TODO: Call with State directly once all heuristics support it.
     virtual int compute_heuristic(const GlobalState &state) = 0;
@@ -69,7 +71,7 @@ public:
     static Options default_options();
 
     virtual EvaluationResult compute_result(
-        EvaluationContext &eval_context) override;
+        EvaluationContext &eval_context) override final;
 
     std::string get_description() const;
 };

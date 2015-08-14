@@ -19,7 +19,8 @@ Heuristic::Heuristic(const Options &opts)
       initialized(false),
       task(get_task_from_options(opts)),
       task_proxy(*task),
-      cost_type(OperatorCost(opts.get_enum("cost_type"))) {
+      cost_type(OperatorCost(opts.get_enum("cost_type"))),
+      cache(new PerStateInformation<int>(UNINITIALIZED)){
 }
 
 Heuristic::~Heuristic() {
@@ -80,7 +81,14 @@ EvaluationResult Heuristic::compute_result(EvaluationContext &eval_context) {
     assert(preferred_operators.empty());
 
     const GlobalState &state = eval_context.get_state();
-    int heuristic = compute_heuristic(state);
+
+    
+    int heuristic = (*cache)[state];
+    if (heuristic == UNINITIALIZED){
+        heuristic = compute_heuristic(state);
+        (*cache)[state] = heuristic;
+    }
+
     for (const GlobalOperator *preferred_operator : preferred_operators)
         preferred_operator->unmark();
     assert(heuristic == DEAD_END || heuristic >= 0);
