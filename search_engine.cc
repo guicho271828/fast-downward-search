@@ -37,13 +37,8 @@ EvaluationContext SearchEngine::get_context(const GlobalState &state,
                                             SearchStatistics *statistics,
                                             SearchSpace *space){
     // read the heuristic cache
-    HeuristicCache* cache = (*hcaches)[state];
-    if (cache == nullptr){
-        cache = new HeuristicCache(state);
-        (*hcaches)[state] = cache;
-        statistics->inc_evaluated_states();
-    }
-    return EvaluationContext(*cache,g,is_preferred,statistics,space);
+    statistics->inc_evaluated_states();
+    return EvaluationContext(state,g,is_preferred,statistics,space);
 }
 
 
@@ -118,7 +113,7 @@ void SearchEngine::add_options_to_parser(OptionParser &parser) {
 }
 
 void print_initial_h_values(const EvaluationContext &eval_context) {
-    eval_context.get_cache().for_each_heuristic_value(
+    eval_context.for_each_heuristic_value(
         [] (const Heuristic * heur, const EvaluationResult &result) {
             cout << "Initial heuristic value for "
                  << heur->get_description() << ": ";
