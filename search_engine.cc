@@ -36,8 +36,6 @@ EvaluationContext SearchEngine::get_context(const GlobalState &state,
                                             int g, bool is_preferred,
                                             SearchStatistics *statistics,
                                             SearchSpace *space){
-    // read the heuristic cache
-    statistics->inc_evaluated_states();
     return EvaluationContext(state,g,is_preferred,statistics,space);
 }
 

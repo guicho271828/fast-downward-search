@@ -21,11 +21,14 @@ EvaluationContext::EvaluationContext(
 }
 
 const EvaluationResult &EvaluationContext::get_result(ScalarEvaluator *heur) {
-    const EvaluationResult &result = heur->compute_result(*this);
-    if (statistics && dynamic_cast<const Heuristic *>(heur)) {
-        /* Only count evaluations of actual Heuristics, not arbitrary
-           scalar evaluators. */
-        statistics->inc_evaluations();
+    EvaluationResult &result = eval_results[heur];
+    if (result.is_uninitialized()) {
+        result = heur->compute_result(*this);
+        if (statistics && dynamic_cast<const Heuristic *>(heur)) {
+            /* Only count evaluations of actual Heuristics, not arbitrary
+               scalar evaluators. */
+            statistics->inc_evaluations();
+        }
     }
     return result;
 }

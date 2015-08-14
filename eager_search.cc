@@ -49,6 +49,7 @@ void EagerSearch::initialize() {
   // operator.
   EvaluationContext eval_context =
       get_context(initial_state, 0, true, &statistics, &search_space);
+  statistics.inc_evaluated_states();
 
   if (open_list->is_dead_end(eval_context)) {
     cout << "Initial state is a dead end." << endl;
@@ -128,6 +129,7 @@ void EagerSearch::per_node_new(GlobalState succ,
         get_context(succ,
                      node.get_g() + get_adjusted_cost(*op),
                      is_preferred, &statistics, &search_space);
+    statistics.inc_evaluated_states();
 
     if (open_list->is_dead_end(eval_context)) {
         succ_node.mark_as_dead_end();
