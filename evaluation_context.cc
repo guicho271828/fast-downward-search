@@ -10,10 +10,10 @@ using namespace std;
 
 
 EvaluationContext::EvaluationContext(
-    HeuristicCache &cache, int g_value, bool is_preferred,
+    const GlobalState &state, int g_value, bool is_preferred,
     SearchStatistics *statistics,
     SearchSpace *space)
-    : cache(&cache),
+    : state(state),
       g_value(g_value),
       preferred(is_preferred),
       statistics(statistics),
@@ -21,25 +21,17 @@ EvaluationContext::EvaluationContext(
 }
 
 const EvaluationResult &EvaluationContext::get_result(ScalarEvaluator *heur) {
-    EvaluationResult &result = (*cache)[heur];
-    if (result.is_uninitialized()) {
-        result = heur->compute_result(*this);
-        if (statistics && dynamic_cast<const Heuristic *>(heur)) {
-            /* Only count evaluations of actual Heuristics, not arbitrary
-               scalar evaluators. */
-            statistics->inc_evaluations();
-        }
+    const EvaluationResult &result = heur->compute_result(*this);
+    if (statistics && dynamic_cast<const Heuristic *>(heur)) {
+        /* Only count evaluations of actual Heuristics, not arbitrary
+           scalar evaluators. */
+        statistics->inc_evaluations();
     }
-    assert(!(*cache)[heur].is_uninitialized());
     return result;
 }
 
-const HeuristicCache &EvaluationContext::get_cache() const {
-    return *cache;
-}
-
 const GlobalState &EvaluationContext::get_state() const {
-    return cache->get_state();
+    return state;
 }
 
 const SearchSpace &EvaluationContext::get_space() const {

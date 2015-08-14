@@ -48,7 +48,8 @@ class SearchStatistics;
 */
 
 class EvaluationContext {
-    HeuristicCache* cache;
+    std::unordered_map<ScalarEvaluator *, EvaluationResult> eval_results;
+    GlobalState state;
     int g_value;
     bool preferred;
     SearchStatistics *statistics;
@@ -64,14 +65,13 @@ public:
       TODO: Can we reuse caches? Can we move them instead of copying them?
     */
     EvaluationContext(
-        HeuristicCache &cache, int g_value, bool is_preferred,
+        const GlobalState &state, int g_value, bool is_preferred,
         SearchStatistics *statistics,
         SearchSpace *space);
 
     ~EvaluationContext() = default;
 
     const EvaluationResult &get_result(ScalarEvaluator *heur);
-    const HeuristicCache &get_cache() const;
     const GlobalState &get_state() const;
     const SearchSpace &get_space() const;
     int get_g_value() const;
@@ -93,6 +93,21 @@ public:
     int get_heuristic_value_or_infinity(ScalarEvaluator *heur);
     const std::vector<const GlobalOperator *> &get_preferred_operators(
         ScalarEvaluator *heur);
+
+    template<class Callback>
+    void for_each_heuristic_value(const Callback &callback) const {
+        for (const auto &element : eval_results) {
+            const ScalarEvaluator *eval = element.first;
+            const EvaluationResult &result = element.second;
+            const Heuristic *heuristic = dynamic_cast<const Heuristic *>(eval);
+            if (heuristic) {
+                /* We want to consider only Heuristic instances, not other
+                   ScalarEvaluator instances. */
+                callback(heuristic, result);
+            }
+        }
+    }
+
 };
 
 #endif
