@@ -23,7 +23,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
         "unsafe_pruning",
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
-    parser.add_option<bool>("fifo", "insert in fifo order", "true");
+    parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "0");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     Options opts = parser.parse();
     if (parser.dry_run())
@@ -35,7 +35,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
 template<class Entry>
 TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
-      fifo(opts.get<bool>("fifo")),
+      queue(opts.get<int>("queue")),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
 }
@@ -52,19 +52,14 @@ template<class Entry>
 void TieBreakingOpenList<Entry>::do_insertion(
     EvaluationContext &eval_context, const Entry &entry) {
     auto key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
-    
-    if (this->fifo)
-      buckets[key].push_back(entry);
-    else
-      buckets[key].push_front(entry);
+    buckets[key].push_back(entry);
     ++size;
 }
 
 template<class Entry>
 Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
     assert(size > 0);
-    typename std::map<const std::vector<int>, Bucket>::iterator it;
-    it = buckets.begin();
+    auto it = buckets.begin();
     assert(it != buckets.end());
     assert(!it->second.empty());
     --size;
@@ -72,9 +67,28 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
         assert(key->empty());
         *key = it->first;
     }
-    Entry result = it->second.front();
-    it->second.pop_front();
-    if (it->second.empty()){
+    auto &bucket = it->second;
+
+    Entry result = bucket.front();
+    switch (queue){
+    case FIFO:
+        bucket.pop_front();
+        break;
+    case LIFO:
+        result = bucket.back();
+        bucket.pop_back();
+        break;
+    case RANDOM:{
+        uniform_int_distribution<> dis(0,bucket.size()-1);
+        auto i = dis(gen);
+        result = bucket[i];
+        bucket.erase(bucket.begin()+i);
+        break;
+    }
+    default:
+        assert(false);
+    }
+    if (bucket.empty()){
         buckets.erase(it);
         if (OpenList<Entry>::emit_frontier)
             cout << "frontier_size=" << frontier_size() << " evals=" << buckets.begin()->first << endl;
