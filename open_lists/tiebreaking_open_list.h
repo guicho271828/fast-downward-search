@@ -11,7 +11,7 @@ class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     int size;
     enum {FIFO,LIFO,RANDOM};
     int queue;
-    mt19937 gen = mt19937(1);
+    mt19937 gen;
 
     std::vector<ScalarEvaluator *> evaluators;
     /*
