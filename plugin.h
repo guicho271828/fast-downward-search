@@ -6,8 +6,8 @@
 // #include "open_lists/pareto_open_list.h"
 #include "open_lists/standard_scalar_open_list.h"
 #include "open_lists/tiebreaking_open_list.h"
-#include "open_lists/open_tree.h"
-#include "open_lists/open_tree2.h"
+// #include "open_lists/open_tree.h"
+// #include "open_lists/open_tree2.h"
 
 #include <iostream>
 #include <map>
@@ -54,10 +54,10 @@ public:
             "alt", AlternationOpenList<Entry>::_parse);
         /* Registry<OpenList<Entry > *>::instance()->register_object( */
         /*     "pareto", ParetoOpenList<Entry>::_parse); */
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "tree", OpenTree<Entry>::_parse);
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "dtree", OpenDTree<Entry>::_parse);
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "tree", OpenTree<Entry>::_parse); */
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "dtree", OpenDTree<Entry>::_parse); */
     }
 };
 

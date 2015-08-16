@@ -91,8 +91,6 @@ HEADERS = \
           open_lists/standard_scalar_open_list.h \
           open_lists/abstract_tiebreaking_open_list.h \
           open_lists/tiebreaking_open_list.h \
-          open_lists/open_tree.h \
-          open_lists/open_tree2.h \
           multi_search.h
           # \
           # lp_internals.h \
@@ -101,6 +99,8 @@ HEADERS = \
           # iterated_search.h \
           # lazy_search.h \
           # enforced_hill_climbing_search.h \
+          # open_lists/open_tree.h \
+          # open_lists/open_tree2.h \
 
 
 ## Each of the following "HEADERS += ..." constructs defines a
@@ -121,7 +121,6 @@ HEADERS += blind_search_heuristic.h
 HEADERS += lm_cut_heuristic.h
 # HEADERS += max_heuristic.h
 # HEADERS += diversity_heuristic.h
-HEADERS += random_heuristic.h
 
 HEADERS += merge_and_shrink/labels.h \
            merge_and_shrink/merge_and_shrink_heuristic.h \
