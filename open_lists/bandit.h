@@ -38,7 +38,8 @@ class Bandit {
     int play = 0;
     L* last_selected = nullptr;
 public:
-    map<int,L> levers;
+    // depth-first
+    map<int,L,greater<int>> levers;
     // unordered_map<int,L> levers;
     Bandit(){};
     ~Bandit(){};
