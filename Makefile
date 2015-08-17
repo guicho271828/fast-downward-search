@@ -447,4 +447,15 @@ ifneq ($(MAKECMDGOALS),clean)
     endif
 endif
 
-.PHONY: default all release debug profile clean distclean
+CORES = $(shell cat /proc/cpuinfo | grep processor | wc -l)
+
+auto:
+	while sleep 2 ; do \
+	$(MAKE) -j $(CORES) debug \
+		&& (notify-send -t 1 "Make:" "Success!"; $(MAKE) -j $(CORES)) \
+		|| notify-send -u critical -t 1 "Make:" "Build failure!"; \
+	inotifywait -r -e modify . --exclude "\.git/.*" --exclude ".*\.log" --exclude ".*\#*#" ;\
+        done ;
+
+.PHONY: default all release debug profile clean distclean auto
+
