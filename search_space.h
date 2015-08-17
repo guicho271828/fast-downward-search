@@ -61,6 +61,7 @@ public:
     void trace_path(const GlobalState &goal_state,
                     std::vector<GlobalState> &path) const;
     /* std::vector<StateID>* trace_path_states(const GlobalState &goal_state) const; */
+    StateID get_parent_id(const GlobalState &state) const;
     void dump() const;
     void print_statistics() const;
 };

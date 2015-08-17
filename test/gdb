@@ -3,3 +3,6 @@
 --heuristic 'h=lmcut()' --search 'eager(tree([sum([g(),h]),h]))' < test/output
 
 --heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h]),queue=0)' < test/output
+
+--heuristic 'h=lmcut()' --search 'eager(ucb([sum([g(),h]),h],frontier=true))' < test/output
+--heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h],frontier=true))' < test/output
