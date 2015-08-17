@@ -25,6 +25,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
         "false");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "0");
     parser.add_option<int>("seed", "seed for random.", "1");
+    parser.add_option<bool>("minstd", "use minstd", "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     Options opts = parser.parse();
     if (parser.dry_run())
@@ -37,7 +38,9 @@ template<class Entry>
 TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
       queue(opts.get<int>("queue")),
+      minstd(opts.get<bool>("minstd")),
       gen(mt19937(opts.get<int>("seed"))),
+      gen2(minstd_rand0(opts.get<int>("seed"))),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
 }
@@ -82,7 +85,12 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
         break;
     case RANDOM:{
         uniform_int_distribution<> dis(0,bucket.size()-1);
-        auto i = dis(gen);
+        int i;
+        if (minstd){
+            i = dis(gen2);
+        }else{
+            i = dis(gen);
+        }
         result = bucket[i];
         bucket.erase(bucket.begin()+i);
         break;
