@@ -56,7 +56,7 @@ class UCBPlateau : public UCB<Reward,Entry,BucketLever> {
             i++;
         }
         assert(best);
-        this->dump();
+        // this->dump();
         return best;
     };
 public:

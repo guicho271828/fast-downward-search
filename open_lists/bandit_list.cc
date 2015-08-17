@@ -38,12 +38,12 @@ void UCBOpenList<Entry>::do_insertion(
         auto pkey = pair.first;
         if (pkey == key){
             depth = pair.second + 1;
-            cout << depth << " ";
+            // cout << depth << " ";
             assert(plateau==get_plateau(pkey));
             plateau->do_reward(1.0);
         }else{
             depth = 0;
-            cout << "X" ;
+            // cout << "X" ;
             auto prev_plateau = get_plateau(pkey);
             prev_plateau->do_reward(0.0);
         }
