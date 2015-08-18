@@ -94,9 +94,10 @@ public:
         int i = 0;
         int best_index = 0;
         cout << "[" ;
-        for (auto &lever : this->levers){
-            Reward s = this->score(lever.second);
-            if (lever.second.empty()){
+        auto it = this->levers.rbegin();
+        while (it!=this->levers.rend()){
+            Reward s = this->score(it->second);
+            if (it->second.empty()){
                 cout << "(" << s << ")";
             }else{
                 cout << " " << s << " ";
@@ -106,6 +107,7 @@ public:
                 }
             }
             i++;
+            it++;
         }
         cout << "] best: " << best_index << endl ;
     };

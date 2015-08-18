@@ -50,6 +50,9 @@ void UCBOpenList<Entry>::do_insertion(
     }
     BucketLever<double,Entry> &lever = (*plateau)[depth];
     lever.push(entry);
+    if (0==lever.get_play()&&depth>0){
+        plateau->dump();
+    }
     depthdb[current] = make_pair(key,depth);
     ++size;
 }
@@ -62,7 +65,7 @@ Entry UCBOpenList<Entry>::remove_min(vector<int> *key) {
     assert(size > 0);
     auto plateau = it->second;
     assert (! plateau->empty());
-    cout << endl ;
+    // cout << endl ;
     BucketLever<double,Entry> *lever = plateau->select();
     assert (! lever->empty());
     Entry result = lever->pull();
