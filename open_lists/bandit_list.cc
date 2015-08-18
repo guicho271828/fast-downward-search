@@ -52,7 +52,7 @@ void UCBOpenList<Entry>::do_insertion(
     }
     BucketLever<double,Entry> &lever = (*plateau)[depth];
     lever.push(entry);
-    if (0==lever.get_play()&&depth>0){
+    if (0==lever.get_play() && 1==lever.size() ){
         plateau->dump();
     }
     depthdb[current] = make_pair(key,depth);
