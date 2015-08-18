@@ -60,7 +60,7 @@ class UCBPlateau : public UCB<Reward,Entry,BucketLever> {
         return best;
     };
 public:
-    UCBPlateau(){};
+    UCBPlateau(Reward k):UCB<Reward,Entry,BucketLever>(k){};
     ~UCBPlateau(){};
     bool empty(){
         for (auto lever : this->levers){
@@ -84,16 +84,16 @@ public:
 template<class Entry>
 class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
     int size = 0;
+    const double k;
     typedef vector<int> Key;
     typedef UCBPlateau<double,Entry> P;
     map<Key, P*> f_buckets;
     unordered_map<Key, P*> f_buckets_unordered;
     PerStateInformation<pair<Key,int>> depthdb;
-
     P* get_plateau(Key key){
         P* ptr = f_buckets_unordered[key];
         if (!ptr){
-            ptr = new UCBPlateau<double,Entry>();
+            ptr = new UCBPlateau<double,Entry>(k);
             f_buckets_unordered[key] = ptr;
         }
         return ptr;

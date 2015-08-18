@@ -77,8 +77,9 @@ class UCB : public Bandit<Reward,Entry,LT> {
         this->dump();
         return best;
     };
+    const Reward k;
 public:
-    UCB(){};
+    UCB(Reward k) : k(k){};
     ~UCB(){};
     Reward score(L& lever){
         if (this->get_play()==0 || lever.get_play()==0){
@@ -86,7 +87,7 @@ public:
         }else{
             return
                 lever.mean_reward() +
-                sqrt(2 * log(this->get_play()) / lever.get_play());
+                sqrt(k * log(this->get_play()) / lever.get_play());
         }
     };
     void dump() {

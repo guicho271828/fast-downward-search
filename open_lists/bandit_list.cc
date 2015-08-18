@@ -13,7 +13,9 @@ using namespace std;
 
 template<class Entry>
 UCBOpenList<Entry>::UCBOpenList(const Options &opts)
-    : AbstractTieBreakingOpenList<Entry>(opts){
+    : AbstractTieBreakingOpenList<Entry>(opts),
+      k(opts.get<double>("k")){
+    cout << "Initializing UCB openlist with exploration ratio = " << k << endl;
 }
 
 template<class Entry>
@@ -120,6 +122,7 @@ OpenList<Entry> *UCBOpenList<Entry>::_parse(OptionParser &parser) {
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
+    parser.add_option<double>("k", "Exploration ratio k of UCB index \\mu + \\sqrt{ k ln(n)/n_i }. k<0.5 is unsafe.", "0.5");
     Options opts = parser.parse();
     if (parser.dry_run())
         return 0;
