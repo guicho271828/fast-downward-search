@@ -24,7 +24,8 @@ using namespace std;
 EagerSearch::EagerSearch(const Options &opts)
   : SearchEngine(opts),
     open_list(opts.get<OpenList<StateID> *>("open")),
-    preferred_operator_heuristics(opts.get_list<Heuristic *>("preferred")) {
+    preferred_operator_heuristics(opts.get_list<Heuristic *>("preferred")),
+    reinsert_open(opts.get<bool>("reinsert_open")){
 }
 
 void EagerSearch::initialize() {
@@ -116,6 +117,10 @@ void EagerSearch::per_node(GlobalState succ,
         per_node_new(succ,state,op,is_preferred);
     } else if (succ_node.get_g() > node.get_g() + get_adjusted_cost(*op)) {
         per_node_reopen(succ,state,op,is_preferred);
+    } else if (reinsert_open &&
+               (succ_node.get_g() == node.get_g() + get_adjusted_cost(*op))){
+        // since h is path-independent and f = g+h, f is also the same !
+        per_node_update_parent(succ,state,op,is_preferred);
     }
 }
 
@@ -156,6 +161,23 @@ void EagerSearch::per_node_reopen(GlobalState succ,
     succ_node.reopen(node, op);
     EvaluationContext eval_context =
         get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
+    open_list->insert(eval_context, succ.get_id());
+}
+
+void EagerSearch::per_node_update_parent(GlobalState succ,
+                                         GlobalState state,
+                                         const GlobalOperator *op,
+                                         const bool is_preferred){
+    auto succ_node = search_space.get_node(succ);
+    auto node = search_space.get_node(state);
+    // We found a new parent within the same plateau.
+    if (succ_node.is_closed())
+        return;
+    succ_node.update_parent(node, op);
+    EvaluationContext eval_context =
+        get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
+    // Assuming the queue is lifo, reinsert the node to the open list
+    // so that the latest information is used
     open_list->insert(eval_context, succ.get_id());
 }
 
@@ -206,6 +228,7 @@ static SearchEngine *_parse(OptionParser &parser) {
   parser.add_option<OpenList<StateID> *>("open", "open list");
   parser.add_list_option<Heuristic *>("preferred", "use preferred operators of these heuristics", "[]");
   parser.add_option<bool>("reopen_closed", "This option is ignored.", "true");
+  parser.add_option<bool>("reinsert_open", "Always reinsert the open node to the open list", "false");
   SearchEngine::add_options_to_parser(parser);
   Options opts = parser.parse();
 

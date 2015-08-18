@@ -14,6 +14,7 @@ class ScalarEvaluator;
 
 class EagerSearch : public SearchEngine {
 
+    bool reinsert_open;
     std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
 
@@ -23,6 +24,7 @@ protected:
     virtual void per_node(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
     virtual void per_node_new(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
     virtual void per_node_reopen(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
+    virtual void per_node_update_parent(GlobalState succ, GlobalState state, const GlobalOperator *op, bool is_preferred);
     void print_checkpoint_line(int g) const;
     virtual std::pair<SearchNode, bool> fetch_next_node();
 
