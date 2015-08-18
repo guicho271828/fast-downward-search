@@ -74,7 +74,6 @@ class UCB : public Bandit<Reward,Entry,LT> {
             }
         }
         assert(best);
-        this->dump();
         return best;
     };
     const Reward k;
@@ -95,23 +94,19 @@ public:
         Reward max = -1 * numeric_limits<double>::infinity();
         int i = 0;
         int best_index = 0;
-        cout << "[" ;
         auto it = this->levers.rbegin();
         while (it!=this->levers.rend()){
             Reward s = this->score(it->second);
-            if (it->second.empty()){
-                cout << "(" << s << ")";
-            }else{
-                cout << " " << s << " ";
-                if (max < s){
-                    max = s;
-                    best_index = i;
-                }
+            cout << " " << s << " ";
+            if (max < s){
+                max = s;
+                best_index = i;
             }
             i++;
             it++;
+            scores.push_back(s);
         }
-        cout << "] best: " << best_index << endl ;
+        cout << scores << " best: " << best_index << endl ;
     };
 };
 

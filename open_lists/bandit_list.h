@@ -77,6 +77,30 @@ public:
         return s;
     };
     BL& operator[](int i){return this->levers[i];};
+    void dump() {
+        Reward max = -1 * numeric_limits<double>::infinity();
+        int i = 0;
+        int best_index = 0;
+        cout << "[" ;
+        auto it = this->levers.rbegin();
+        bool first = true;
+        while (it!=this->levers.rend()){
+            Reward s = this->score(it->second);
+            if (!first)
+                cout << ", ";
+            cout << s << "/" << it->second.size();
+            first=false;
+            if (!it->second.empty()){
+                if (max < s){
+                    max = s;
+                    best_index = i;
+                }
+            }
+            i++;
+            it++;
+        }
+        cout << "] best: " << best_index << endl ;
+    };
 };
 
 

@@ -40,19 +40,25 @@ void UCBOpenList<Entry>::do_insertion(
         auto pkey = pair.first;
         if (pkey == key){
             depth = pair.second + 1;
-            // cout << depth << " ";
             assert(plateau==get_plateau(pkey));
+            // cout << "O";
+            // cout << "rewarding depth " << pair.second << endl;
             plateau->do_reward(1.0);
         }else{
             depth = 0;
             // cout << "X" ;
+            // cout << "Punishing depth " << pair.second << endl;
             auto prev_plateau = get_plateau(pkey);
             prev_plateau->do_reward(0.0);
         }
     }
+    int oldsize = plateau->levers.size();
     BucketLever<double,Entry> &lever = (*plateau)[depth];
+    int newsize = plateau->levers.size();
     lever.push(entry);
-    if (0==lever.get_play() && 1==lever.size() ){
+    if (oldsize < newsize){
+        // cout << endl;
+        cout << "New depth " << depth << "@" << key << ": ";
         plateau->dump();
     }
     depthdb[current] = make_pair(key,depth);
@@ -67,20 +73,29 @@ Entry UCBOpenList<Entry>::remove_min(vector<int> *key) {
     assert(size > 0);
     auto plateau = it->second;
     assert (! plateau->empty());
-    // cout << endl ;
     BucketLever<double,Entry> *lever = plateau->select();
     assert (! lever->empty());
     Entry result = lever->pull();
+    // cout << endl << "Pulling ";
+    // plateau->dump();
+    // Note: the expansion of the pulled result may contain closed nodes.
+    // When all nodes are closed, no OX indicators will be printed
     --size;
     if (plateau->empty()){
+        if (OpenList<Entry>::emit_frontier){
+            cout << it->first << " exhausted. " << endl;
+            // plateau->dump();
+        }
         // this f value is exhausted!
         f_buckets.erase(it);
         if (OpenList<Entry>::emit_frontier){
             cout << "frontier_size=" << frontier_size() << " evals=";
             if (f_buckets.begin()!=f_buckets.end()){
-                cout << f_buckets.begin()->first << endl;
+                cout << f_buckets.begin()->first;
+                cout << " Next Plateau: " ;
+                f_buckets.begin()->second->dump();
             }else{
-                cout << "unknown" << endl;
+                cout << "unknown";
             }
         }
     }
