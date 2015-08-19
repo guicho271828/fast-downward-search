@@ -32,22 +32,20 @@ void UCBOpenList<Entry>::do_insertion(
     auto pid = space.get_parent_id(current);
     
     auto &info = depthdb[current];
-    
     int depth;
-    if (pid == StateID::no_state){
+
+    if(pid == StateID::no_state){
         assert(current.get_id() == g_initial_state().get_id());
-        depth = 0;
+        BucketLever<double,Entry> &lever = (*plateau)[0];
+        lever.push(entry);
+        info = depthinfo(key,0,--lever.end());
+        ++size;
     }else{
         auto parent = g_state_registry->lookup_state(pid);
         auto pinfo = depthdb[parent];
         auto pkey = pinfo.key;
         if (pkey == key){
             depth = pinfo.depth + 1;
-            if (info.initialized){
-                // updating the parent!
-                cout << "updating the depth " << info.depth << " -> " << depth ; 
-                (*plateau)[info.depth].erase(info.it);
-            }
             assert(plateau==get_plateau(pkey));
             // Rewarding current depth
             // cout << "O";
@@ -59,19 +57,33 @@ void UCBOpenList<Entry>::do_insertion(
             auto prev_plateau = get_plateau(pkey);
             prev_plateau->do_reward(0.0);
         }
+        int oldsize = plateau->levers.size();
+        BucketLever<double,Entry> &lever = (*plateau)[depth];
+        int newsize = plateau->levers.size();
+        if (oldsize < newsize){
+            // cout << endl;
+            cout << "New depth " << depth << "@" << key << ": ";
+            plateau->dump();
+        }
+
+        if (! info.initialized){
+            lever.push(entry);
+            info = depthinfo(key,depth,--lever.end());
+            ++size;
+        }else{
+            // this path is not only taken by reinsert_open mode, but also
+            // in the reopen_closed.
+            if ( info.depth <= depth ){
+                cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
+                (*plateau)[info.depth].erase(info.it);
+                // now this info.it is invalidated. this should be later
+                // initialized by a new iterator.
+            }
+            lever.push(entry);
+            depthdb[current] = depthinfo(key,depth,--lever.end());
+            // do not increase the size
+        }
     }
-    int oldsize = plateau->levers.size();
-    BucketLever<double,Entry> &lever = (*plateau)[depth];
-    int newsize = plateau->levers.size();
-    lever.push(entry);
-    if (oldsize < newsize){
-        // cout << endl;
-        cout << "New depth " << depth << "@" << key << ": ";
-        plateau->dump();
-    }
-    auto it = lever.bucket.end(); it--;
-    info = depthinfo(key,depth,it,true);
-    ++size;
 }
 
 template<class Entry>
