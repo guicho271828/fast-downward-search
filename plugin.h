@@ -9,6 +9,7 @@
 // #include "open_lists/open_tree.h"
 // #include "open_lists/open_tree2.h"
 #include "open_lists/bandit_list.h"
+#include "open_lists/ucb_list.h"
 
 #include <iostream>
 #include <map>
@@ -61,6 +62,8 @@ public:
         /*     "dtree", OpenDTree<Entry>::_parse); */
         Registry<OpenList<Entry > *>::instance()->register_object(
             "ucb", UCBOpenList<Entry>::_parse);
+        Registry<OpenList<Entry > *>::instance()->register_object(
+            "rd", UCBOpenList<Entry>::_parse);
     }
 };
 

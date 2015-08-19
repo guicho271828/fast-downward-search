@@ -38,19 +38,17 @@ public:
     }
 };
 
-
-
-template<class Reward, class Entry>
-class UCBPlateau : public UCB<Reward,Entry,BucketLever> { 
+template<class Reward, class Entry, template<class,class,template<class,class> class> class B>
+class Plateau : public B<Reward,Entry,BucketLever> {
     typedef BucketLever<Reward,Entry> BL;
 public:
-    UCBPlateau(Reward k):UCB<Reward,Entry,BucketLever>(k){};
-    ~UCBPlateau(){};
+    Plateau():B<Reward,Entry,BucketLever>(){};
+    ~Plateau(){};
     Reward score (BL& lever) override {
         if (lever.empty()){
             return -1 * numeric_limits<Reward>::infinity();
         }else{
-            return UCB<Reward,Entry,BucketLever>::score(lever);
+            return B<Reward,Entry,BucketLever>::score(lever);
         }
     };
     bool empty(){
@@ -67,7 +65,7 @@ public:
         }
         return s;
     };
-    void dump() {
+    void dump(){
         Reward max = -1 * numeric_limits<double>::infinity();
         int i = 0;
         int best_index = 0;
@@ -93,17 +91,15 @@ public:
     };
 };
 
-
-
-template<class Entry>
-class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
-    int size = 0;
-    const double k;
+template<class Entry, template<class,class,template<class,class> class> class B>
+class BanditOpenList : public AbstractTieBreakingOpenList<Entry> {
+public:
     typedef vector<int> Key;
-    typedef UCBPlateau<double,Entry> P;
+    typedef Plateau<double,Entry,B> P;
+private:
+    int size = 0;
     map<Key, P*> f_buckets;
     unordered_map<Key, P*> f_buckets_unordered;
-
     struct depthinfo {
         depthinfo() : key(Key()),
                       initialized(false),
@@ -121,7 +117,7 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
     P* get_plateau(Key key){
         P* ptr = f_buckets_unordered[key];
         if (!ptr){
-            ptr = new UCBPlateau<double,Entry>(k);
+            ptr = make_plateau();
             f_buckets_unordered[key] = ptr;
         }
         return ptr;
@@ -130,18 +126,18 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
 protected:
     virtual void do_insertion(EvaluationContext &eval_context,
                               const Entry &entry) override;
-
+    virtual P* make_plateau() = 0;
 public:
-    explicit UCBOpenList(const Options &opts);
-    virtual ~UCBOpenList() override = default;
-
+    explicit BanditOpenList(const Options &opts);
+    ~BanditOpenList() override = default;
     virtual Entry remove_min(vector<int> *key = 0) override;
     /* low priority */
     virtual bool empty() const override;
     virtual void clear() override;
     virtual int frontier_size() override;
-    static OpenList<Entry> *_parse(OptionParser &parser);
 };
+
+
 
 #include "bandit_list.cc"
 

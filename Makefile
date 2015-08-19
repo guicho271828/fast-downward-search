@@ -93,6 +93,7 @@ HEADERS = \
           open_lists/tiebreaking_open_list.h \
           open_lists/bandit.h \
           open_lists/bandit_list.h \
+          open_lists/ucb_list.h \
           multi_search.h
           # \
           # lp_internals.h \

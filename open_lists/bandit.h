@@ -77,9 +77,10 @@ public:
 template<class Reward, class Entry, template<typename,typename> class LT>
 class UCB : public Bandit<Reward,Entry,LT> {
     typedef LT<Reward,Entry> L;
-    const Reward k;
+protected:
 public:
-    UCB(Reward k) : k(k){};
+    Reward k;
+    UCB(){};
     ~UCB(){};
     L* do_select(){return this->select_max_score();};
     Reward score(L& lever){
@@ -117,10 +118,10 @@ class EpsilonBandit : public Bandit<Reward,Entry,LT> {
     typedef Lever<Reward,Entry> L;
 protected:
     mt19937 gen = mt19937(1);
-    double initial_epsilon;
+    Reward initial_epsilon;
     virtual bool should_choose_best() = 0;
 public:
-    EpsilonBandit(double initial_epsilon) : initial_epsilon(initial_epsilon){};
+    EpsilonBandit(Reward initial_epsilon) : initial_epsilon(initial_epsilon){};
     ~EpsilonBandit(){};
     L* do_select(){
         if(should_choose_best()){
@@ -137,20 +138,20 @@ public:
 template<class Reward, class Entry, template<typename,typename> class LT>
 class EpsilonDecreasing : public EpsilonBandit<Reward,Entry,LT> {
     bool should_choose_best(){
-        return this->initial_epsilon/this->get_play() < generate_canonical<double,10>(this->gen);
+        return this->initial_epsilon/this->get_play() < generate_canonical<Reward,10>(this->gen);
     }
 public:
-    EpsilonDecreasing(double initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    EpsilonDecreasing(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
     ~EpsilonDecreasing(){};
 };
 
 template<class Reward, class Entry, template<typename,typename> class LT>
 class EpsilonGreedy : public EpsilonBandit<Reward,Entry,LT> {
     bool should_choose_best(){
-        return this->initial_epsilon < generate_canonical<double,10>(this->gen);
+        return this->initial_epsilon < generate_canonical<Reward,10>(this->gen);
     }
 public:
-    EpsilonGreedy(double initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    EpsilonGreedy(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
     ~EpsilonGreedy(){};
 };
 
