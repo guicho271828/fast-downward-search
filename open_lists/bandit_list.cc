@@ -72,15 +72,23 @@ void UCBOpenList<Entry>::do_insertion(
             ++size;
         }else{
             // this path is not only taken by reinsert_open mode, but also
-            // in the reopen_closed.
-            if ( pkey == key && info.depth <= depth ){
-                cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
-                (*plateau)[info.depth].erase(info.it);
-                // now this info.it is invalidated. this should be later
-                // initialized by a new iterator.
+            // in reopen_closed. When reopened, info.key > key.
+            // When reinserted, info.key == key.
+            assert(info.key >= key);
+            if ( info.key > key ){
+                // reopened.
+                (*get_plateau(info.key))[info.depth].erase(info.it);
+                lever.push(entry);
+                info = depthinfo(key,depth,--lever.end());
+            }else {
+                // reinserted.
+                if ( info.depth < depth ){
+                    // cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
+                    (*plateau)[info.depth].erase(info.it);
+                    lever.push(entry);
+                    info = depthinfo(key,depth,--lever.end());
+                }
             }
-            lever.push(entry);
-            depthdb[current] = depthinfo(key,depth,--lever.end());
             // do not increase the size
         }
     }
