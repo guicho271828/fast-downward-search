@@ -7,14 +7,14 @@
 #include "bandit.h"
 #include <limits>
 #include <unordered_map>
-#include <tuple>
+#include <deque>
 
 using namespace std;
 
 
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
-    vector<Entry> bucket;
+    deque<Entry> bucket;
 public:
     // BucketLever() : Lever<Reward,Entry>() {};
     BucketLever(){}
@@ -24,16 +24,16 @@ public:
         bucket.pop_back();
         return e;
     }
-    void push(Entry e) {
+    void push(const Entry &e) {
         // emulates lifo
         bucket.push_back(e);
     }
     bool empty(){return bucket.empty();}
     int size(){return bucket.size();}
-    void erase(typename vector<Entry>::iterator it){
+    void erase(typename deque<Entry>::iterator it){
         bucket.erase(it);
     }
-    typename vector<Entry>::iterator end(){
+    typename deque<Entry>::iterator end(){
         return bucket.end();
     }
 };
@@ -110,11 +110,11 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
                       depth(-1){
         };
         depthinfo(Key key, int depth,
-                  typename vector<Entry>::iterator it)
+                  typename deque<Entry>::iterator it)
             : key(key), depth(depth), it(it), initialized(true){};
         Key key;
         int depth = -1;
-        typename vector<Entry>::iterator it;
+        typename deque<Entry>::iterator it;
         bool initialized = false;
     };
     PerStateInformation<depthinfo> depthdb;

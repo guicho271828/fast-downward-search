@@ -28,7 +28,7 @@ public:
     };
     void do_reward(Reward r){ play++; reward += r;};
     virtual Entry pull() = 0;
-    virtual void push(Entry e) = 0;
+    virtual void push(const Entry &e) = 0;
 };
 
 
