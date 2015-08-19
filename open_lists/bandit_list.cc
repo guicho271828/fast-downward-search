@@ -44,21 +44,19 @@ void UCBOpenList<Entry>::do_insertion(
         auto parent = g_state_registry->lookup_state(pid);
         auto pinfo = depthdb[parent];
         auto pkey = pinfo.key;
-        assert(pkey<=key);
-        if (pkey == key){
-            depth = pinfo.depth + 1;
-            assert(plateau==get_plateau(pkey));
-            // Rewarding current depth
+        auto ances_plateau = get_plateau(pkey);
+        if ( pkey >= key ){
+            // Rewarding previous depth
             // cout << "O";
-            plateau->do_reward(1.0);
-        }else{
-            assert(pkey<key);
-            depth = 0;
+            ances_plateau->do_reward(1.0);
+            depth = pinfo.depth+1;
+        }else { assert(pkey < key);
             // Punishing previous depth
             // cout << "X";
-            auto prev_plateau = get_plateau(pkey);
-            prev_plateau->do_reward(0.0);
+            ances_plateau->do_reward(0.0);
+            depth = 0;
         }
+        
         int oldsize = plateau->levers.size();
         BucketLever<double,Entry> &lever = (*plateau)[depth];
         int newsize = plateau->levers.size();
