@@ -8,14 +8,13 @@
 #include <limits>
 #include <unordered_map>
 #include <tuple>
-#include <list>
 
 using namespace std;
 
 
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
-    list<Entry> bucket;
+    vector<Entry> bucket;
 public:
     // BucketLever() : Lever<Reward,Entry>() {};
     BucketLever(){}
@@ -31,10 +30,10 @@ public:
     }
     bool empty(){return bucket.empty();}
     int size(){return bucket.size();}
-    void erase(typename list<Entry>::iterator it){
+    void erase(typename vector<Entry>::iterator it){
         bucket.erase(it);
     }
-    typename list<Entry>::iterator end(){
+    typename vector<Entry>::iterator end(){
         return bucket.end();
     }
 };
@@ -128,11 +127,11 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
                       depth(-1){
         };
         depthinfo(Key key, int depth,
-                  typename list<Entry>::iterator it)
+                  typename vector<Entry>::iterator it)
             : key(key), depth(depth), it(it), initialized(true){};
         Key key;
         int depth = -1;
-        typename list<Entry>::iterator it;
+        typename vector<Entry>::iterator it;
         bool initialized = false;
     };
     PerStateInformation<depthinfo> depthdb;
