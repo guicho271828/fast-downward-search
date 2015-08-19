@@ -20,13 +20,13 @@ public:
     ~BucketLever(){};
     deque<Entry> bucket;
     Entry pull() {
-        Entry e = bucket.front();
-        bucket.pop_front();
+        Entry e = bucket.back();
+        bucket.pop_back();
         return e;
     };
     void push(Entry e) {
         // emulates lifo
-        bucket.push_front(e);
+        bucket.push_back(e);
     };
     bool empty(){return bucket.empty();};
     int size(){return bucket.size();};
