@@ -43,32 +43,16 @@ public:
 template<class Reward, class Entry>
 class UCBPlateau : public UCB<Reward,Entry,BucketLever> { 
     typedef BucketLever<Reward,Entry> BL;
-    BL* do_select(){
-        assert(!this->levers.empty());
-        Reward max = -1 * numeric_limits<Reward>::infinity();
-        BL* best = nullptr;
-        int i = 0;
-        int best_index = 0;
-        for (auto &lever : this->levers){
-            if (lever.second.empty()){
-                // cout << "Slot " << i << " is empty!: " << endl;
-            }else{
-                Reward s = this->score(lever.second);
-                if (max < s){
-                    max = s;
-                    best = &(lever.second);
-                    best_index = i;
-                }
-            }
-            i++;
-        }
-        assert(best);
-        // this->dump();
-        return best;
-    };
 public:
     UCBPlateau(Reward k):UCB<Reward,Entry,BucketLever>(k){};
     ~UCBPlateau(){};
+    Reward score (BL& lever) override {
+        if (lever.empty()){
+            return -1 * numeric_limits<Reward>::infinity();
+        }else{
+            return UCB<Reward,Entry,BucketLever>::score(lever);
+        }
+    };
     bool empty(){
         for (auto lever : this->levers){
             if (!lever.second.empty())
@@ -83,7 +67,6 @@ public:
         }
         return s;
     };
-    BL& operator[](int i){return this->levers[i];};
     void dump() {
         Reward max = -1 * numeric_limits<double>::infinity();
         int i = 0;

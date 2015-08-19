@@ -45,7 +45,9 @@ public:
     ~Bandit(){};
     int get_play(){return play;};
     virtual L* select() final {
+        assert(!levers.empty()); 
         last_selected = do_select();
+        assert(last_selected);
         return last_selected;
     } ;
     void do_reward(Reward r){
@@ -55,15 +57,7 @@ public:
     };
     L& operator[](int i){return levers[i];};
     virtual L* do_select(){return nullptr;};
-    virtual void dump(){};
-};
-
-
-template<class Reward, class Entry, template<typename,typename> class LT>
-class UCB : public Bandit<Reward,Entry,LT> {
-    typedef LT<Reward,Entry> L;
-    L* do_select(){
-        assert(!this->levers.empty()); 
+    L* select_max_score(){
         Reward max = -1 * numeric_limits<double>::infinity();
         L* best = nullptr;
         for (auto lever : this->levers){
@@ -73,13 +67,21 @@ class UCB : public Bandit<Reward,Entry,LT> {
                 best = &(lever.second);
             }
         }
-        assert(best);
         return best;
-    };
+    }
+    virtual Reward score(L& lever) = 0;
+    virtual void dump(){};
+};
+
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class UCB : public Bandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
     const Reward k;
 public:
     UCB(Reward k) : k(k){};
     ~UCB(){};
+    L* do_select(){return this->select_max_score();};
     Reward score(L& lever){
         if (this->get_play()==0 || lever.get_play()==0){
             return numeric_limits<Reward>::infinity();
@@ -110,38 +112,57 @@ public:
     };
 };
 
+template<class Reward, class Entry, template<typename,typename> class LT>
+class EpsilonBandit : public Bandit<Reward,Entry,LT> {
+    typedef Lever<Reward,Entry> L;
+protected:
+    mt19937 gen = mt19937(1);
+    double initial_epsilon;
+    virtual bool should_choose_best() = 0;
+public:
+    EpsilonBandit(double initial_epsilon) : initial_epsilon(initial_epsilon){};
+    ~EpsilonBandit(){};
+    L* do_select(){
+        if(should_choose_best()){
+            return this->select_max_score();
+        }else{
+            uniform_int_distribution<> dis(0,this->levers.size()-1);
+            return &(this->levers[dis(gen)]);
+        }
+    }
+    Reward score(L& lever){return lever.mean_reward();}
+};
 
-// template<class LT, class Reward, class Entry>
-// class EpsilonDecreasing : public Bandit<LT,Reward,Entry> {
-//     typedef Lever<Reward,Entry> L;
-//     mt19937 gen = mt19937(1);
-//     double initial_epsilon;
-//     bool should_choose_best(){
-//         return initial_epsilon/this->get_play() < generate_canonical<double,10>(gen);
-//     }
-//     L* do_select(){
-//         assert(!this->levers.empty());
-//         if(should_choose_best()){
-//             Reward max = numeric_limits<Reward>::min();
-//             L* best = nullptr;
-//             for (auto lever : this->levers){
-//                 Reward score = lever->mean_reward();
-//                 if (max < score){
-//                     max = score;
-//                     best = &lever;
-//                 }
-//             }
-// assert(best);
-//             return best;
-//         }else{
-//             uniform_int_distribution<> dis(0,this->levers.size()-1);
-//             return &(this->levers[dis(gen)]);
-//         }
-//     }
-// public:
-//     EpsilonDecreasing(){};
-//     ~EpsilonDecreasing(){};
-// };
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class EpsilonDecreasing : public EpsilonBandit<Reward,Entry,LT> {
+    bool should_choose_best(){
+        return this->initial_epsilon/this->get_play() < generate_canonical<double,10>(this->gen);
+    }
+public:
+    EpsilonDecreasing(double initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    ~EpsilonDecreasing(){};
+};
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class EpsilonGreedy : public EpsilonBandit<Reward,Entry,LT> {
+    bool should_choose_best(){
+        return this->initial_epsilon < generate_canonical<double,10>(this->gen);
+    }
+public:
+    EpsilonGreedy(double initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    ~EpsilonGreedy(){};
+};
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class RandomBandit : public EpsilonGreedy<Reward,Entry,LT> {
+    bool should_choose_best(){return false;}
+public:
+    RandomBandit(){};
+    ~RandomBandit(){};
+};
+
+
 
 #include "bandit.cc"
 
