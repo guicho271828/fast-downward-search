@@ -60,7 +60,7 @@ public:
     L* select_max_score(){
         Reward max = -1 * numeric_limits<double>::infinity();
         L* best = nullptr;
-        for (auto lever : this->levers){
+        for (auto &lever : this->levers){
             Reward s = score(lever.second);
             if (max < s){
                 max = s;

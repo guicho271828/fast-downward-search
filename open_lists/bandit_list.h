@@ -54,7 +54,7 @@ public:
         }
     };
     bool empty(){
-        for (auto lever : this->levers){
+        for (auto &lever : this->levers){
             if (!lever.second.empty())
                 return false;
         }
@@ -62,7 +62,7 @@ public:
     };
     int size(){
         int s = 0;
-        for (auto lever : this->levers){
+        for (auto &lever : this->levers){
             s += lever.second.size();
         }
         return s;
