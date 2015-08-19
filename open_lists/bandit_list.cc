@@ -44,6 +44,7 @@ void UCBOpenList<Entry>::do_insertion(
         auto parent = g_state_registry->lookup_state(pid);
         auto pinfo = depthdb[parent];
         auto pkey = pinfo.key;
+        assert(pkey<=key);
         if (pkey == key){
             depth = pinfo.depth + 1;
             assert(plateau==get_plateau(pkey));
@@ -51,6 +52,7 @@ void UCBOpenList<Entry>::do_insertion(
             // cout << "O";
             plateau->do_reward(1.0);
         }else{
+            assert(pkey<key);
             depth = 0;
             // Punishing previous depth
             // cout << "X";
@@ -71,20 +73,25 @@ void UCBOpenList<Entry>::do_insertion(
             info = depthinfo(key,depth,--lever.end());
             ++size;
         }else{
-            // this path is not only taken by reinsert_open mode, but also
-            // in reopen_closed. When reopened, info.key > key.
-            // When reinserted, info.key == key.
+            // this path is not only taken by reinsert_open, but also
+            // by reopen_closed. When reopened, info.key > key.
+            // When reinserted, info.key == key. info.key < key never happen.
             assert(info.key >= key);
             if ( info.key > key ){
                 // reopened.
-                (*get_plateau(info.key))[info.depth].erase(info.it);
+                // 
+                // Push to the new lever regardress of depth, since f is
+                // different. The node in the higher f may be revisited by
+                // remove_min, but at that time it should be
+                // already closed.
                 lever.push(entry);
                 info = depthinfo(key,depth,--lever.end());
             }else {
                 // reinserted.
                 if ( info.depth < depth ){
                     // cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
-                    (*plateau)[info.depth].erase(info.it);
+                    // revisiting the closed node is ok. I do not try to remove the node from lower depth.
+                    // however, I do want to stop inserting the node when the new depth is same as or lower than the original node.
                     lever.push(entry);
                     info = depthinfo(key,depth,--lever.end());
                 }
