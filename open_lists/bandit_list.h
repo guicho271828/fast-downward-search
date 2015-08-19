@@ -7,6 +7,7 @@
 #include "bandit.h"
 #include <limits>
 #include <unordered_map>
+#include <tuple>
 
 using namespace std;
 
@@ -113,7 +114,7 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef UCBPlateau<double,Entry> P;
     map<Key, P*> f_buckets;
     unordered_map<Key, P*> f_buckets_unordered;
-    PerStateInformation<pair<Key,int>> depthdb;
+    PerStateInformation<tuple<Key,int>> depthdb;
     P* get_plateau(Key key){
         P* ptr = f_buckets_unordered[key];
         if (!ptr){

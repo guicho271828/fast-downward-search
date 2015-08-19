@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cassert>
 #include <limits>
+#include <tuple>
 
 using namespace std;
 
@@ -37,17 +38,17 @@ void UCBOpenList<Entry>::do_insertion(
     }else{
         auto parent = g_state_registry->lookup_state(pid);
         auto pair = depthdb[parent];
-        auto pkey = pair.first;
+        auto pkey = get<0>(pair);
         if (pkey == key){
-            depth = pair.second + 1;
+            depth = get<1>(pair) + 1;
             assert(plateau==get_plateau(pkey));
+            // Rewarding current depth
             // cout << "O";
-            // cout << "rewarding depth " << pair.second << endl;
             plateau->do_reward(1.0);
         }else{
             depth = 0;
-            // cout << "X" ;
-            // cout << "Punishing depth " << pair.second << endl;
+            // Punishing previous depth
+            // cout << "X";
             auto prev_plateau = get_plateau(pkey);
             prev_plateau->do_reward(0.0);
         }
@@ -61,7 +62,7 @@ void UCBOpenList<Entry>::do_insertion(
         cout << "New depth " << depth << "@" << key << ": ";
         plateau->dump();
     }
-    depthdb[current] = make_pair(key,depth);
+    depthdb[current] = tuple<Key,int>(key,depth);
     ++size;
 }
 
