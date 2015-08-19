@@ -31,16 +31,23 @@ void UCBOpenList<Entry>::do_insertion(
     const SearchSpace &space = eval_context.get_space();
     auto pid = space.get_parent_id(current);
     
+    auto &info = depthdb[current];
+    
     int depth;
     if (pid == StateID::no_state){
         assert(current.get_id() == g_initial_state().get_id());
         depth = 0;
     }else{
         auto parent = g_state_registry->lookup_state(pid);
-        auto pair = depthdb[parent];
-        auto pkey = get<0>(pair);
+        auto pinfo = depthdb[parent];
+        auto pkey = pinfo.key;
         if (pkey == key){
-            depth = get<1>(pair) + 1;
+            depth = pinfo.depth + 1;
+            if (info.initialized){
+                // updating the parent!
+                cout << "updating the depth " << info.depth << " -> " << depth ; 
+                (*plateau)[info.depth].erase(info.it);
+            }
             assert(plateau==get_plateau(pkey));
             // Rewarding current depth
             // cout << "O";
@@ -62,7 +69,8 @@ void UCBOpenList<Entry>::do_insertion(
         cout << "New depth " << depth << "@" << key << ": ";
         plateau->dump();
     }
-    depthdb[current] = tuple<Key,int>(key,depth);
+    auto it = lever.bucket.end(); it--;
+    info = depthinfo(key,depth,it,true);
     ++size;
 }
 
