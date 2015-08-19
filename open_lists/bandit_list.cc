@@ -44,6 +44,7 @@ void UCBOpenList<Entry>::do_insertion(
         auto parent = g_state_registry->lookup_state(pid);
         auto pinfo = depthdb[parent];
         auto pkey = pinfo.key;
+        assert(pkey<=key);
         if (pkey == key){
             depth = pinfo.depth + 1;
             assert(plateau==get_plateau(pkey));
@@ -51,6 +52,7 @@ void UCBOpenList<Entry>::do_insertion(
             // cout << "O";
             plateau->do_reward(1.0);
         }else{
+            assert(pkey<key);
             depth = 0;
             // Punishing previous depth
             // cout << "X";
@@ -71,9 +73,9 @@ void UCBOpenList<Entry>::do_insertion(
             info = depthinfo(key,depth,--lever.end());
             ++size;
         }else{
-            // this path is not only taken by reinsert_open mode, but also
-            // in reopen_closed. When reopened, info.key > key.
-            // When reinserted, info.key == key.
+            // this path is not only taken by reinsert_open, but also
+            // by reopen_closed. When reopened, info.key > key.
+            // When reinserted, info.key == key. info.key < key never happen.
             assert(info.key >= key);
             if ( info.key > key ){
                 // reopened.
