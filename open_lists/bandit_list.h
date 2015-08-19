@@ -7,28 +7,36 @@
 #include "bandit.h"
 #include <limits>
 #include <unordered_map>
+#include <tuple>
+#include <list>
 
 using namespace std;
 
 
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
+    list<Entry> bucket;
 public:
     // BucketLever() : Lever<Reward,Entry>() {};
-    BucketLever(){};
-    ~BucketLever(){};
-    deque<Entry> bucket;
+    BucketLever(){}
+    ~BucketLever(){}
     Entry pull() {
-        Entry e = bucket.front();
-        bucket.pop_front();
+        Entry e = bucket.back();
+        bucket.pop_back();
         return e;
-    };
+    }
     void push(Entry e) {
         // emulates lifo
-        bucket.push_front(e);
-    };
-    bool empty(){return bucket.empty();};
-    int size(){return bucket.size();};
+        bucket.push_back(e);
+    }
+    bool empty(){return bucket.empty();}
+    int size(){return bucket.size();}
+    void erase(typename list<Entry>::iterator it){
+        bucket.erase(it);
+    }
+    typename list<Entry>::iterator end(){
+        return bucket.end();
+    }
 };
 
 
@@ -113,7 +121,21 @@ class UCBOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef UCBPlateau<double,Entry> P;
     map<Key, P*> f_buckets;
     unordered_map<Key, P*> f_buckets_unordered;
-    PerStateInformation<pair<Key,int>> depthdb;
+
+    struct depthinfo {
+        depthinfo() : key(Key()),
+                      initialized(false),
+                      depth(-1){
+        };
+        depthinfo(Key key, int depth,
+                  typename list<Entry>::iterator it)
+            : key(key), depth(depth), it(it), initialized(true){};
+        Key key;
+        int depth = -1;
+        typename list<Entry>::iterator it;
+        bool initialized = false;
+    };
+    PerStateInformation<depthinfo> depthdb;
     P* get_plateau(Key key){
         P* ptr = f_buckets_unordered[key];
         if (!ptr){

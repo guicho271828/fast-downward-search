@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cassert>
 #include <limits>
+#include <tuple>
 
 using namespace std;
 
@@ -30,39 +31,67 @@ void UCBOpenList<Entry>::do_insertion(
     const SearchSpace &space = eval_context.get_space();
     auto pid = space.get_parent_id(current);
     
+    auto &info = depthdb[current];
     int depth;
-    if (pid == StateID::no_state){
+
+    if(pid == StateID::no_state){
         assert(current.get_id() == g_initial_state().get_id());
-        depth = 0;
+        BucketLever<double,Entry> &lever = (*plateau)[0];
+        lever.push(entry);
+        info = depthinfo(key,0,--lever.end());
+        ++size;
     }else{
         auto parent = g_state_registry->lookup_state(pid);
-        auto pair = depthdb[parent];
-        auto pkey = pair.first;
+        auto pinfo = depthdb[parent];
+        auto pkey = pinfo.key;
         if (pkey == key){
-            depth = pair.second + 1;
+            depth = pinfo.depth + 1;
             assert(plateau==get_plateau(pkey));
+            // Rewarding current depth
             // cout << "O";
-            // cout << "rewarding depth " << pair.second << endl;
             plateau->do_reward(1.0);
         }else{
             depth = 0;
-            // cout << "X" ;
-            // cout << "Punishing depth " << pair.second << endl;
+            // Punishing previous depth
+            // cout << "X";
             auto prev_plateau = get_plateau(pkey);
             prev_plateau->do_reward(0.0);
         }
+        int oldsize = plateau->levers.size();
+        BucketLever<double,Entry> &lever = (*plateau)[depth];
+        int newsize = plateau->levers.size();
+        if (oldsize < newsize){
+            // cout << endl;
+            cout << "New depth " << depth << "@" << key << ": ";
+            plateau->dump();
+        }
+
+        if (! info.initialized){
+            lever.push(entry);
+            info = depthinfo(key,depth,--lever.end());
+            ++size;
+        }else{
+            // this path is not only taken by reinsert_open mode, but also
+            // in reopen_closed. When reopened, info.key > key.
+            // When reinserted, info.key == key.
+            assert(info.key >= key);
+            if ( info.key > key ){
+                // reopened.
+                (*get_plateau(info.key))[info.depth].erase(info.it);
+                lever.push(entry);
+                info = depthinfo(key,depth,--lever.end());
+            }else {
+                // reinserted.
+                if ( info.depth < depth ){
+                    // cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
+                    (*plateau)[info.depth].erase(info.it);
+                    lever.push(entry);
+                    info = depthinfo(key,depth,--lever.end());
+                }
+            }
+            // do not increase the size
+        }
     }
-    int oldsize = plateau->levers.size();
-    BucketLever<double,Entry> &lever = (*plateau)[depth];
-    int newsize = plateau->levers.size();
-    lever.push(entry);
-    if (oldsize < newsize){
-        // cout << endl;
-        cout << "New depth " << depth << "@" << key << ": ";
-        plateau->dump();
-    }
-    depthdb[current] = make_pair(key,depth);
-    ++size;
 }
 
 template<class Entry>
