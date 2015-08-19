@@ -73,7 +73,7 @@ void UCBOpenList<Entry>::do_insertion(
         }else{
             // this path is not only taken by reinsert_open mode, but also
             // in the reopen_closed.
-            if ( info.depth <= depth ){
+            if ( pkey == key && info.depth <= depth ){
                 cout << "updating the depth " << info.depth << " -> " << depth << endl ; 
                 (*plateau)[info.depth].erase(info.it);
                 // now this info.it is invalidated. this should be later
