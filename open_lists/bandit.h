@@ -64,11 +64,13 @@ public:
         Reward max = -1 * numeric_limits<double>::infinity();
         L* best = nullptr;
         for (auto &lever : this->levers){
+            if (lever.second.available()){
             Reward s = score(lever.second);
-            if (max < s && lever.second.available()){
+                if (max < s){
                 max = s;
                 best = &(lever.second);
             }
+        }
         }
         return best;
     }
