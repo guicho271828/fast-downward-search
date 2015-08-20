@@ -115,13 +115,13 @@ public:
 
 template<class Reward, class Entry, template<typename,typename> class LT>
 class EpsilonBandit : public Bandit<Reward,Entry,LT> {
-    typedef Lever<Reward,Entry> L;
+    typedef LT<Reward,Entry> L;
 protected:
     mt19937 gen = mt19937(1);
     Reward initial_epsilon;
     virtual bool should_choose_best() = 0;
 public:
-    EpsilonBandit(Reward initial_epsilon) : initial_epsilon(initial_epsilon){};
+    explicit EpsilonBandit(Reward initial_epsilon) : initial_epsilon(initial_epsilon){};
     ~EpsilonBandit(){};
     L* do_select(){
         if(should_choose_best()){
@@ -141,7 +141,7 @@ class EpsilonDecreasing : public EpsilonBandit<Reward,Entry,LT> {
         return this->initial_epsilon/this->get_play() < generate_canonical<Reward,10>(this->gen);
     }
 public:
-    EpsilonDecreasing(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    explicit EpsilonDecreasing(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
     ~EpsilonDecreasing(){};
 };
 
@@ -151,16 +151,23 @@ class EpsilonGreedy : public EpsilonBandit<Reward,Entry,LT> {
         return this->initial_epsilon < generate_canonical<Reward,10>(this->gen);
     }
 public:
-    EpsilonGreedy(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
+    explicit EpsilonGreedy(Reward initial_epsilon) : EpsilonBandit<Reward,Entry,LT>(initial_epsilon){};
     ~EpsilonGreedy(){};
 };
 
 template<class Reward, class Entry, template<typename,typename> class LT>
-class RandomBandit : public EpsilonGreedy<Reward,Entry,LT> {
-    bool should_choose_best(){return false;}
+class RandomBandit : public Bandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
+protected:
+    mt19937 gen = mt19937(1);
 public:
-    RandomBandit(){};
+    explicit RandomBandit(){};
     ~RandomBandit(){};
+    L* do_select(){
+        uniform_int_distribution<> dis(0,this->levers.size()-1);
+        return &(this->levers[dis(gen)]);
+    }
+    Reward score(L& lever){return 0;}
 };
 
 

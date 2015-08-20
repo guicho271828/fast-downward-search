@@ -37,11 +37,7 @@ public:
 template<class Reward, class Entry>
 class RandomPlateau : public Plateau<Reward,Entry,RandomBandit> {
 public:
-    RandomPlateau(Reward _k) :
-        Plateau<Reward,Entry,RandomBandit>() {
-        // the name k was not successfully resolved... pity
-        this->k=_k;
-    };
+    RandomPlateau() : Plateau<Reward,Entry,RandomBandit>() {};
     ~RandomPlateau(){};
 };
 
@@ -51,7 +47,7 @@ class RandomDepthOpenList : public BanditOpenList<Entry,RandomBandit> {
     double k;
 protected:
     P* make_plateau(){
-        return new RandomPlateau<double,Entry>(k);
+        return new RandomPlateau<double,Entry>();
     };
 public:
     explicit RandomDepthOpenList(const Options &opts);
