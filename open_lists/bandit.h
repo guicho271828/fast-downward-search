@@ -6,7 +6,9 @@
 #include <random>
 #include <unordered_map>
 #include <map>
+#include <cassert>
 #include <iostream>
+#include <deque>
 
 using namespace std;
 
@@ -29,6 +31,7 @@ public:
     void do_reward(Reward r){ play++; reward += r;};
     virtual Entry pull() = 0;
     virtual void push(const Entry &e) = 0;
+    virtual bool available() = 0;
 };
 
 
@@ -62,7 +65,7 @@ public:
         L* best = nullptr;
         for (auto &lever : this->levers){
             Reward s = score(lever.second);
-            if (max < s){
+            if (max < s && lever.second.available()){
                 max = s;
                 best = &(lever.second);
             }
@@ -114,10 +117,34 @@ public:
 };
 
 template<class Reward, class Entry, template<typename,typename> class LT>
-class EpsilonBandit : public Bandit<Reward,Entry,LT> {
+class RandomBandit : public Bandit<Reward,Entry,LT> {
     typedef LT<Reward,Entry> L;
 protected:
     mt19937 gen = mt19937(1);
+public:
+    explicit RandomBandit(){};
+    ~RandomBandit(){};
+    L* do_select(){
+        deque<L*> availables;
+        for (auto &lever : this->levers){
+            if (lever.second.available()){
+                availables.push_back(&(lever.second));
+            }
+        }
+        assert(!availables.empty());
+        uniform_int_distribution<> dis(0,availables.size()-1);
+        return availables[dis(gen)];
+    };
+    Reward score(L& lever){
+        Reward x = numeric_limits<Reward>::quiet_NaN();
+        return x;
+    };
+};
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class EpsilonBandit : public RandomBandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
+protected:
     Reward initial_epsilon;
     virtual bool should_choose_best() = 0;
 public:
@@ -127,8 +154,7 @@ public:
         if(should_choose_best()){
             return this->select_max_score();
         }else{
-            uniform_int_distribution<> dis(0,this->levers.size()-1);
-            return &(this->levers[dis(gen)]);
+            return RandomBandit<Reward,Entry,LT>::do_select();
         }
     }
     Reward score(L& lever){return lever.mean_reward();}
@@ -155,20 +181,6 @@ public:
     ~EpsilonGreedy(){};
 };
 
-template<class Reward, class Entry, template<typename,typename> class LT>
-class RandomBandit : public Bandit<Reward,Entry,LT> {
-    typedef LT<Reward,Entry> L;
-protected:
-    mt19937 gen = mt19937(1);
-public:
-    explicit RandomBandit(){};
-    ~RandomBandit(){};
-    L* do_select(){
-        uniform_int_distribution<> dis(0,this->levers.size()-1);
-        return &(this->levers[dis(gen)]);
-    }
-    Reward score(L& lever){return 0;}
-};
 
 
 

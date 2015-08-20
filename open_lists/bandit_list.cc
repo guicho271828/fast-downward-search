@@ -58,12 +58,7 @@ void BanditOpenList<Entry,B>::do_insertion(
         int oldsize = plateau->levers.size();
         BucketLever<double,Entry> &lever = (*plateau)[depth];
         int newsize = plateau->levers.size();
-        if (oldsize < newsize){
-            // cout << endl;
-            cout << "New depth " << depth << "@" << key << ": ";
-            plateau->dump();
-        }
-
+        
         if (! info.initialized){
             lever.push(entry);
             info = depthinfo(key,depth,--lever.end());
@@ -93,6 +88,11 @@ void BanditOpenList<Entry,B>::do_insertion(
                 }
             }
             // do not increase the size
+        }
+        if (oldsize < newsize){
+            // cout << endl;
+            cout << "New depth " << depth << "@" << key << ": ";
+            plateau->dump();
         }
     }
 }

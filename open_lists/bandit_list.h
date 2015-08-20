@@ -36,6 +36,9 @@ public:
     typename deque<Entry>::iterator end(){
         return bucket.end();
     }
+    bool available(){
+        return !bucket.empty();
+    };
 };
 
 template<class Reward, class Entry, template<class,class,template<class,class> class> class B>
@@ -44,13 +47,6 @@ class Plateau : public B<Reward,Entry,BucketLever> {
 public:
     Plateau():B<Reward,Entry,BucketLever>(){};
     ~Plateau(){};
-    Reward score (BL& lever) override {
-        if (lever.empty()){
-            return -1 * numeric_limits<Reward>::infinity();
-        }else{
-            return B<Reward,Entry,BucketLever>::score(lever);
-        }
-    };
     bool empty(){
         for (auto &lever : this->levers){
             if (!lever.second.empty())
