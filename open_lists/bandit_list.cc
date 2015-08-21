@@ -91,8 +91,8 @@ void BanditOpenList<Entry,B>::do_insertion(
         }
         if (oldsize < newsize){
             // cout << endl;
-            cout << "New depth " << depth << "@" << key << ": ";
-            plateau->dump();
+            cout << "New depth " << depth << "@" << key << endl;
+            // plateau->dump();
         }
     }
 }
