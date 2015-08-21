@@ -48,7 +48,7 @@ public:
     ~Bandit(){};
     int get_play(){return play;};
     virtual L* select() final {
-        assert(!levers.empty()); 
+        assert(!levers.empty());
         last_selected = do_select();
         assert(last_selected);
         return last_selected;
@@ -65,12 +65,14 @@ public:
         L* best = nullptr;
         for (auto &lever : this->levers){
             if (lever.second.available()){
-            Reward s = score(lever.second);
+                Reward s = score(lever.second);
+                if (s == numeric_limits<double>::infinity())
+                    return &(lever.second);
                 if (max < s){
-                max = s;
-                best = &(lever.second);
+                    max = s;
+                    best = &(lever.second);
+                }
             }
-        }
         }
         return best;
     }

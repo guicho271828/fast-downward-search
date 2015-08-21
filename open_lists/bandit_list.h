@@ -101,16 +101,14 @@ private:
                       initialized(false),
                       depth(-1){
         };
-        depthinfo(Key key, int depth,
-                  typename deque<Entry>::iterator it)
-            : key(key), depth(depth), it(it), initialized(true){};
+        depthinfo(const Key &key, int depth)
+            : key(key), depth(depth), initialized(true){};
         Key key;
         int depth = -1;
-        typename deque<Entry>::iterator it;
         bool initialized = false;
     };
     PerStateInformation<depthinfo> depthdb;
-    P* get_plateau(Key key){
+    P* get_plateau(const Key &key){
         P* ptr = f_buckets_unordered[key];
         if (!ptr){
             ptr = make_plateau();

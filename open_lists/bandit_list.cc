@@ -21,13 +21,13 @@ template<class Entry, template<class,class,template<class,class> class> class B>
 void BanditOpenList<Entry,B>::do_insertion(
     EvaluationContext &eval_context, const Entry &entry) {
 
-    auto key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
+    const auto &key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
     auto plateau = get_plateau(key);
     f_buckets[key] = plateau;
 
-    GlobalState current = eval_context.get_state();
+    const GlobalState &current = eval_context.get_state();
     const SearchSpace &space = eval_context.get_space();
-    auto pid = space.get_parent_id(current);
+    const auto &pid = space.get_parent_id(current);
     
     auto &info = depthdb[current];
     int depth;
@@ -36,13 +36,13 @@ void BanditOpenList<Entry,B>::do_insertion(
         assert(current.get_id() == g_initial_state().get_id());
         BucketLever<double,Entry> &lever = (*plateau)[0];
         lever.push(entry);
-        info = depthinfo(key,0,--lever.end());
+        info = depthinfo(key,0);
         ++size;
     }else{
-        auto parent = g_state_registry->lookup_state(pid);
-        auto pinfo = depthdb[parent];
-        auto pkey = pinfo.key;
-        auto ances_plateau = get_plateau(pkey);
+        const auto &parent = g_state_registry->lookup_state(pid);
+        const auto &pinfo = depthdb[parent];
+        const auto &pkey = pinfo.key;
+        const auto &ances_plateau = get_plateau(pkey);
         if ( pkey >= key ){
             // Rewarding previous depth
             // cout << "O";
@@ -55,13 +55,13 @@ void BanditOpenList<Entry,B>::do_insertion(
             depth = 0;
         }
         
-        int oldsize = plateau->levers.size();
+        // int oldsize = plateau->levers.size();
         BucketLever<double,Entry> &lever = (*plateau)[depth];
-        int newsize = plateau->levers.size();
+        // int newsize = plateau->levers.size();
         
         if (! info.initialized){
             lever.push(entry);
-            info = depthinfo(key,depth,--lever.end());
+            info = depthinfo(key,depth);
             ++size;
         }else{
             // this path is not only taken by reinsert_open, but also
@@ -76,7 +76,7 @@ void BanditOpenList<Entry,B>::do_insertion(
                 // remove_min, but at that time it should be
                 // already closed.
                 lever.push(entry);
-                info = depthinfo(key,depth,--lever.end());
+                info = depthinfo(key,depth);
             }else {
                 // reinserted.
                 if ( info.depth < depth ){
@@ -84,16 +84,16 @@ void BanditOpenList<Entry,B>::do_insertion(
                     // revisiting the closed node is ok. I do not try to remove the node from lower depth.
                     // however, I do want to stop inserting the node when the new depth is same as or lower than the original node.
                     lever.push(entry);
-                    info = depthinfo(key,depth,--lever.end());
+                    info = depthinfo(key,depth);
                 }
             }
             // do not increase the size
         }
-        if (oldsize < newsize){
+        // if (oldsize < newsize){
             // cout << endl;
-            cout << "New depth " << depth << "@" << key << endl;
+            // cout << "New depth " << depth << "@" << key << endl;
             // plateau->dump();
-        }
+        // }
     }
 }
 
