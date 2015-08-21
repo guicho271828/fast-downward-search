@@ -101,7 +101,7 @@ private:
                       initialized(false),
                       depth(-1){
         };
-        depthinfo(const Key &key, int depth)
+        depthinfo(const Key &key, const int &depth)
             : key(key), depth(depth), initialized(true){};
         Key key;
         int depth = -1;
