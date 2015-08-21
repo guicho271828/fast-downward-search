@@ -23,7 +23,6 @@ void BanditOpenList<Entry,B>::do_insertion(
 
     const auto &key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
     auto plateau = get_plateau(key);
-    f_buckets[key] = plateau;
 
     const GlobalState &current = eval_context.get_state();
     const SearchSpace &space = eval_context.get_space();
@@ -37,6 +36,7 @@ void BanditOpenList<Entry,B>::do_insertion(
         BucketLever<double,Entry> &lever = (*plateau)[0];
         lever.push(entry);
         info = depthinfo(key,0);
+        f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
         ++size;
     }else{
         const auto &parent = g_state_registry->lookup_state(pid);
@@ -63,6 +63,7 @@ void BanditOpenList<Entry,B>::do_insertion(
             lever.push(entry);
             info = depthinfo(key,depth);
             ++size;
+            f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
         }else{
             // this path is not only taken by reinsert_open, but also
             // by reopen_closed. When reopened, info.key > key.
@@ -72,11 +73,12 @@ void BanditOpenList<Entry,B>::do_insertion(
                 // reopened.
                 // 
                 // Push to the new lever regardress of depth, since f is
-                // different. The node in the higher f may be revisited by
-                // remove_min, but at that time it should be
-                // already closed.
+                // different. The node may be revisited at the higher f,
+                // but at that time it is already closed and does not
+                // result in expansion.
                 lever.push(entry);
                 info = depthinfo(key,depth);
+                f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
             }else {
                 // reinserted.
                 if ( info.depth < depth ){
