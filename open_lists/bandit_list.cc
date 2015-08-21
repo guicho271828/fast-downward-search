@@ -61,7 +61,7 @@ void BanditOpenList<Entry,B>::do_insertion(
         
         if (! info.initialized){
             lever.push(entry);
-            info = depthinfo(key,depth);
+            info.key=key; info.depth=depth; info.initialized=true;
             ++size;
             f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
         }else{
@@ -77,7 +77,7 @@ void BanditOpenList<Entry,B>::do_insertion(
                 // but at that time it is already closed and does not
                 // result in expansion.
                 lever.push(entry);
-                info = depthinfo(key,depth);
+                info.key=key; info.depth=depth;
                 f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
             }else {
                 // reinserted.
@@ -86,7 +86,7 @@ void BanditOpenList<Entry,B>::do_insertion(
                     // revisiting the closed node is ok. I do not try to remove the node from lower depth.
                     // however, I do want to stop inserting the node when the new depth is same as or lower than the original node.
                     lever.push(entry);
-                    info = depthinfo(key,depth);
+                    info.key=key; info.depth=depth;
                 }
             }
             // do not increase the size
