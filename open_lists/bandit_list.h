@@ -20,14 +20,30 @@ public:
     BucketLever(){}
     ~BucketLever(){}
     Entry pull() {
-        Entry e = bucket.back();
-        bucket.pop_back();
-        return e;
+        Entry result;
+        switch (queue){
+        case FIFO:
+            result = bucket.front();
+            bucket.pop_front();
+            break;
+        case LIFO:
+            result = bucket.back();
+            bucket.pop_back();
+            break;
+        case RANDOM:{
+            int i = g_rng(bucket.size());
+            auto it = bucket.begin()+i;
+            result = *it;
+            bucket.erase(it);
+            break;
+        }
+        }
+        return result;
     }
     void push(const Entry &e) {
-        // emulates lifo
-        bucket.push_back(e);
-    }
+            // emulates lifo
+            bucket.push_back(e);
+        }
     bool empty(){return bucket.empty();}
     int size(){return bucket.size();}
     void erase(typename deque<Entry>::iterator it){
