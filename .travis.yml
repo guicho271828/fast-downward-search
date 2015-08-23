@@ -3,13 +3,12 @@ language: cpp
 compiler: g++
 
 before_install:
-- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-- sudo apt-get update -qq
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
 
 install:
-- sudo apt-get install -qq g++-4.8
-- export CXX="g++-4.8"
- - sudo apt-get install g++ make flex bison
+  - sudo apt-get install -qq g++-4.8 g++-multilib g++-4.8-multilib make flex bison
+  - export CXX="g++-4.8"
 
 script:
   - make
