@@ -15,6 +15,7 @@ using namespace std;
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
     deque<Entry> bucket;
+    int queue;
 public:
     // BucketLever() : Lever<Reward,Entry>() {};
     BucketLever(){}
@@ -60,6 +61,7 @@ public:
 template<class Reward, class Entry, template<class,class,template<class,class> class> class B>
 class Plateau : public B<Reward,Entry,BucketLever> {
     typedef BucketLever<Reward,Entry> BL;
+    int queue;
 public:
     Plateau():B<Reward,Entry,BucketLever>(){};
     ~Plateau(){};

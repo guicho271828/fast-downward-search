@@ -12,6 +12,8 @@ class OptionParser;
 class Options;
 class ScalarEvaluator;
 
+enum {FIFO,LIFO,RANDOM};
+
 
 template<class Entry>
 class AbstractTieBreakingOpenList : public OpenList<Entry> {
@@ -37,8 +39,7 @@ public:
     virtual bool is_reliable_dead_end(
         EvaluationContext &eval_context) const override;
     vector<int> get_key(EvaluationContext &eval_context);
-    enum {FIFO,LIFO,RANDOM};
-    int queue;
+    const int queue;
 };
 
 #include "abstract_tiebreaking_open_list.cc"
