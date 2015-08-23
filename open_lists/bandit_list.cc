@@ -33,7 +33,7 @@ void BanditOpenList<Entry,B>::do_insertion(
 
     if(pid == StateID::no_state){
         assert(current.get_id() == g_initial_state().get_id());
-        BucketLever<double,Entry> &lever = (*plateau)[0];
+        BucketLever<double,Entry> &lever = plateau->get_lever(0);
         lever.push(entry);
         info = depthinfo(key,0);
         f_buckets[key] = plateau; // very costly, required only when a new fvalue is found
@@ -56,7 +56,7 @@ void BanditOpenList<Entry,B>::do_insertion(
         }
         
         // int oldsize = plateau->levers.size();
-        BucketLever<double,Entry> &lever = (*plateau)[depth];
+        BucketLever<double,Entry> &lever = plateau->get_lever(depth);
         // int newsize = plateau->levers.size();
         
         if (! info.initialized){

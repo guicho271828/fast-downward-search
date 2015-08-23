@@ -71,7 +71,7 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
     auto &bucket = it->second;
 
     Entry result = bucket.front();
-    switch (queue){
+    switch (this->queue){
     case FIFO:
         bucket.pop_front();
         break;
