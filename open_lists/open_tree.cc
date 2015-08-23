@@ -40,7 +40,7 @@ void OpenTree<Entry>::do_insertion(
                 // the path have changed
                 auto old = node->parent;
                 old->children.erase(node);
-                cleanup(old,db);
+                old->cleanup(db);
             }
             parent->children.insert(node);
             node->parent = parent;
@@ -97,7 +97,7 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
     if (OpenList<Entry>::emit_frontier)
         counts[it->first]--;
     // root->dump();
-    auto result = search_and_cleanup(root,db);
+    auto result = root->search_and_cleanup(db);
     // cout << "-->" << endl;
     // root->dump();
     // cout << "removed " << *result << endl;
@@ -116,50 +116,6 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
         }
     }
     return result;
-}
-
-template<class Entry>
-const Entry OpenTree<Entry>::search_and_cleanup(TreeNode<Entry>* tree, DB<Entry>* db) {
-    auto node = search(tree);
-    auto result = *(node->get_entry()); // move
-    // assert(node->children.empty());
-    // not true;; root-help-help-open-open is possible
-    node->delete_entry();
-    // becomes    root-help-help-help-open.
-    // still somewhat fifo
-    cleanup(node, db);
-    return result;
-}
-
-template<class Entry>
-TreeNode<Entry>* OpenTree<Entry>::search(TreeNode<Entry>* tree) {
-    if (tree->get_entry()){
-        // TODO: if there are children like root-help-help-open(1)-open(2),
-        // is it necessary to open (1) and (2) at random?
-        // If I change this condition to tree->children.empty(),
-        // then it would open (2) first.
-        return tree;
-    }
-    else{
-        assert(!tree->children.empty());
-        std::uniform_int_distribution<> dis(0, tree->children.size()-1);
-        auto it = tree->children.begin();
-        int i = dis(gen);
-        for (int j = 0 ; j < i ; j++) it++;
-        return search(*it);
-    }
-}
-
-template<class Entry>
-void cleanup(TreeNode<Entry>* tree, DB<Entry>* db) {
-    if (tree->parent // not a root node
-        && tree->children.empty()
-        && !(tree->get_entry())){
-        tree->parent->children.erase(tree);
-        cleanup(tree->parent,db);
-        (*db)[tree->state] = nullptr;
-        delete tree;
-    }
 }
 
 template<class Entry>
