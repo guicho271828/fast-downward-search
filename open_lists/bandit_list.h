@@ -20,10 +20,9 @@ public:
     BucketLever(){}
     ~BucketLever(){}
     Entry pull() {
-        Entry result;
+        Entry result = bucket.front();
         switch (queue){
         case FIFO:
-            result = bucket.front();
             bucket.pop_front();
             break;
         case LIFO:
