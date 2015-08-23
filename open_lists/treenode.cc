@@ -67,7 +67,7 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
         case FIFO:
             return this;
         case LIFO:
-            if (!children.empty()){
+            if (children.empty()){
                 return this;
             }
             break;
