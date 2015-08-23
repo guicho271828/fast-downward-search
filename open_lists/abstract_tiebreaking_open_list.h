@@ -37,6 +37,8 @@ public:
     virtual bool is_reliable_dead_end(
         EvaluationContext &eval_context) const override;
     vector<int> get_key(EvaluationContext &eval_context);
+    enum {FIFO,LIFO,RANDOM};
+    int queue;
 };
 
 #include "abstract_tiebreaking_open_list.cc"

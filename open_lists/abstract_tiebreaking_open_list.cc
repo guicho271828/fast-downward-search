@@ -15,6 +15,7 @@ template<class Entry>
 AbstractTieBreakingOpenList<Entry>::AbstractTieBreakingOpenList(const Options &opts)
     : OpenList<Entry>(opts.get<bool>("pref_only"), opts.get<bool>("frontier")),
       evaluators(opts.get_list<ScalarEvaluator *>("evals")),
+      queue(opts.get<int>("queue")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
 }
 
