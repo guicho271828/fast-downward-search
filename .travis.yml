@@ -1,0 +1,8 @@
+sudo: required
+language: c++
+
+install:
+  - sudo apt-get install g++ make flex bison
+
+script:
+  - make
