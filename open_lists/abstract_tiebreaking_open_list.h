@@ -2,6 +2,7 @@
 #define OPEN_LISTS_ABSTRACT_TIEBREAKING_OPEN_LIST_H
 
 #include "open_list.h"
+#include "../rng.h"
 
 #include <deque>
 #include <map>
@@ -12,7 +13,7 @@ class OptionParser;
 class Options;
 class ScalarEvaluator;
 
-enum {FIFO,LIFO,RANDOM};
+enum QueueType {FIFO,LIFO,RANDOM_O};
 
 
 template<class Entry>

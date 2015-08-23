@@ -31,7 +31,7 @@ public:
             result = bucket.back();
             bucket.pop_back();
             break;
-        case RANDOM:{
+        case RANDOM_O:{
             int i = g_rng(bucket.size());
             auto it = bucket.begin()+i;
             result = *it;

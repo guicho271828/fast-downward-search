@@ -71,7 +71,7 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
                 return this;
             }
             break;
-        case RANDOM:{
+        case RANDOM_O:{
             int depth = g_rng(max_depth());
             auto branches = branches_with_depth(depth);
             auto it = g_rng.choose<auto>(branches);
