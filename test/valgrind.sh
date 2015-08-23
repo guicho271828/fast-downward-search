@@ -2,11 +2,14 @@
 
 # vg="valgrind --tool=massif "
 # vg="valgrind --leak-check=full"
-vg="valgrind --tool=callgrind --trace-children=yes"
+export vg="valgrind --tool=callgrind --trace-children=yes"
 
 k=0.5
-ucb="eager(ucb([sum([g(),h]),h],k=$k),reopen_closed=true)"
-lifo="eager(tiebreaking([sum([g(),h]),h],queue=1),reopen_closed=true)"
+export ucb="eager(ucb([sum([g(),h]),h],k=$k),reopen_closed=true)"
+export lifo="eager(tiebreaking([sum([g(),h]),h],queue=1),reopen_closed=true)"
+export ftree="eager(tree([sum([g(),h]),h],queue=0),reopen_closed=true)"
+export ltree="eager(tree([sum([g(),h]),h],queue=1),reopen_closed=true)"
+export rtree="eager(tree([sum([g(),h]),h],queue=2),reopen_closed=true)"
 
 ref (){
     if eval "[ -z \${$1+x} ]"
@@ -19,23 +22,13 @@ ref (){
     fi
 }
 
-run (){
-    date=$(date +"%Y-%m-%d-%H-%M")
-    echo "-*- truncate-lines : t -*-" > $2.$date.$1.log 
-    echo "-*- truncate-lines : t -*-" > $2.$date.$1.err
-    $vg ../downward-debug --heuristic 'h=lmcut()' --search "$(ref $1)" \
-        < $2 >> $2.$date.$1.log 2>> $2.$date.$1.err
-}
+export -f ref
 
 [ -z $* ] && {
-    echo "No input file list!" >&2
+    echo "valgrind.sh: No input file list!" >&2
     exit 1
 }
 
-for file in $@
-do
-    run ucb $file &
-    run lifo $file &
-done
 
-wait
+parallel ./run.sh ::: ftree ltree rtree ::: $@
+
