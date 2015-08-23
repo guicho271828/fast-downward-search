@@ -96,8 +96,8 @@ HEADERS = \
           open_lists/ucb_list.h \
           open_lists/treenode.h \
           open_lists/open_tree.h \
-	  open_lists/open_tree2.h \
           multi_search.h
+	  # open_lists/open_tree2.h \
           # \
           # lp_internals.h \
           # lp_solver.h \
