@@ -24,8 +24,8 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "0");
-    parser.add_option<int>("seed", "seed for random.", "1");
-    parser.add_option<bool>("minstd", "use minstd", "false");
+    parser.add_option<int>("seed", "seed for random. ignored", "1");
+    parser.add_option<bool>("minstd", "use minstd. ignored", "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     Options opts = parser.parse();
     if (parser.dry_run())
@@ -83,13 +83,7 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
         bucket.pop_back();
         break;
     case RANDOM:{
-        uniform_int_distribution<> dis(0,bucket.size()-1);
-        int i;
-        if (minstd){
-            i = dis(gen2);
-        }else{
-            i = dis(gen);
-        }
+        int i = g_rng(bucket.size());
         result = bucket[i];
         bucket.erase(bucket.begin()+i);
         break;
