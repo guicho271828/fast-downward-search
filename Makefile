@@ -94,6 +94,9 @@ HEADERS = \
           open_lists/bandit.h \
           open_lists/bandit_list.h \
           open_lists/ucb_list.h \
+          open_lists/treenode.h \
+          open_lists/open_tree.h \
+	  open_lists/open_tree2.h \
           multi_search.h
           # \
           # lp_internals.h \
