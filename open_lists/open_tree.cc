@@ -4,6 +4,7 @@
 #include "../evaluation_context.h"
 #include "../option_parser.h"
 #include "../scalar_evaluator.h"
+#include "treenode.h"
 
 #include <iostream>
 #include <cassert>
@@ -97,7 +98,7 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
     if (OpenList<Entry>::emit_frontier)
         counts[it->first]--;
     // root->dump();
-    auto result = root->search_and_cleanup(db,queue);
+    Entry result = root->search_and_cleanup(db,this->queue);
     // cout << "-->" << endl;
     // root->dump();
     // cout << "removed " << *result << endl;

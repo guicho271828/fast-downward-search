@@ -10,7 +10,7 @@ void TreeNode<Entry>::delete_entry(){
 }
 
 template<class Entry>
-void TreeNode<Entry>::dump(int level = 0){
+void TreeNode<Entry>::dump(int level){
     cout << ";; ";
     for (int i = 0; i < level; i++)
         cout << "  ";
@@ -27,24 +27,24 @@ void TreeNode<Entry>::dump(int level = 0){
 template<class Entry>
 int TreeNode<Entry>::max_depth() {
     int max = -1;
-    for ( auto subtree : children ){
-        max = max(max,subtree->max_depth());
+    for ( auto &subtree : children ){
+        int depth = subtree->max_depth();
+        if (max < depth)
+            max = depth;
     }
     return max + 1;
 }
 
 template<class Entry>
 vector<TreeNode<Entry>*> TreeNode<Entry>::branches_with_depth(int depth) {
-    vector<TreeNode<Entry>*> branches(tree->children.size);
-    for ( auto subtree : tree->children ){
-        if (depth < max_depth_from(subtree)){
+    vector<TreeNode<Entry>*> branches(children.size());
+    for ( auto &subtree : children ){
+        if (depth < subtree->max_depth()){
             branches.push_back(subtree);
         }
     }
     return branches;
 }
-
-
 
 
 template<class Entry>
@@ -74,8 +74,8 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
         case RANDOM_O:{
             int depth = g_rng(max_depth());
             auto branches = branches_with_depth(depth);
-            auto it = g_rng.choose<auto>(branches);
-            return it->search(queue);
+            auto it = g_rng.choose<TreeNode<Entry>* >(branches);
+            return (**it).search(queue);
         }
         }
     }
@@ -84,11 +84,11 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
     auto it = children.begin();
     int i = g_rng(children.size());
     for (int j = 0 ; j < i ; j++) it++;
-    return it->search(queue);
+    return (*it)->search(queue);
 }
 
 template<class Entry>
-void cleanup(DB<Entry>* db) {
+void TreeNode<Entry>::cleanup(DB<Entry>* db) {
     if (parent // not a root node
         && children.empty()
         && !(get_entry())){

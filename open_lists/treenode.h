@@ -5,6 +5,9 @@
 using namespace std;
 
 template<class Entry>
+class TreeNode;
+
+template<class Entry>
 using DB = PerStateInformation<TreeNode<Entry>* > ;
 
 
@@ -29,10 +32,11 @@ public:
     set<TreeNode*> children;
     const GlobalState state;
     void dump(int level = 0);
-    int max_depth();
-    int search(int queue);
+    int max_depth(); 
+    vector<TreeNode<Entry>*> branches_with_depth(int depth);
+    TreeNode<Entry>* search(int queue);
     const Entry search_and_cleanup(DB<Entry>* db, int queue);
-    void cleanup(DB<Entry>* db, int queue);
+    void cleanup(DB<Entry>* db);
 };
 
 #include "treenode.cc"
