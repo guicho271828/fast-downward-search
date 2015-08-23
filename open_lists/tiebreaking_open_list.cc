@@ -37,9 +37,6 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
 template<class Entry>
 TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
-      minstd(opts.get<bool>("minstd")),
-      gen(mt19937(opts.get<int>("seed"))),
-      gen2(minstd_rand0(opts.get<int>("seed"))),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
 }
