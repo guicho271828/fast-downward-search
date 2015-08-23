@@ -63,7 +63,7 @@ class Plateau : public B<Reward,Entry,BucketLever> {
     typedef BucketLever<Reward,Entry> BL;
     int queue;
 public:
-    Plateau():B<Reward,Entry,BucketLever>(){};
+    Plateau(int _queue):B<Reward,Entry,BucketLever>(), queue(_queue){};
     ~Plateau(){};
     bool empty(){
         for (auto &lever : this->levers){
