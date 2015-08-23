@@ -32,9 +32,10 @@ public:
     set<TreeNode*> children;
     const GlobalState state;
     void dump(int level = 0);
-    int max_depth(); 
-    vector<TreeNode<Entry>*> branches_with_depth(int depth);
-    TreeNode<Entry>* search(int queue);
+    TreeNode<Entry>* search_first_entry();
+    TreeNode<Entry>* search_last_entry();
+    TreeNode<Entry>* search_random_depth();
+    TreeNode<Entry>* search_random_depth_rec(vector<TreeNode<Entry> *>* acc);
     const Entry search_and_cleanup(DB<Entry>* db, int queue);
     void cleanup(DB<Entry>* db);
 };
