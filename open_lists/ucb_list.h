@@ -8,10 +8,11 @@
 template<class Reward, class Entry>
 class UCBPlateau : public Plateau<Reward,Entry,UCB> {
 public:
-    UCBPlateau(Reward _k) :
+    UCBPlateau(Reward _k, int _queue) :
         Plateau<Reward,Entry,UCB>() {
         // the name k was not successfully resolved... pity
         this->k=_k;
+        this->queue=_queue;
     };
     ~UCBPlateau(){};
 };
@@ -22,7 +23,7 @@ class UCBOpenList : public BanditOpenList<Entry,UCB> {
     double k;
 protected:
     P* make_plateau(){
-        return new UCBPlateau<double,Entry>(k);
+        return new UCBPlateau<double,Entry>(this->k,this->queue);
     };
 public:
     explicit UCBOpenList(const Options &opts);
@@ -37,17 +38,18 @@ public:
 template<class Reward, class Entry>
 class RandomPlateau : public Plateau<Reward,Entry,RandomBandit> {
 public:
-    RandomPlateau() : Plateau<Reward,Entry,RandomBandit>() {};
+    RandomPlateau(int _queue) : Plateau<Reward,Entry,RandomBandit>() {
+        this->queue=_queue;
+    };
     ~RandomPlateau(){};
 };
 
 template<class Entry>
 class RandomDepthOpenList : public BanditOpenList<Entry,RandomBandit> {
     typedef typename BanditOpenList<Entry,RandomBandit>::P P;
-    double k;
 protected:
     P* make_plateau(){
-        return new RandomPlateau<double,Entry>();
+        return new RandomPlateau<double,Entry>(this->queue);
     };
 public:
     explicit RandomDepthOpenList(const Options &opts);

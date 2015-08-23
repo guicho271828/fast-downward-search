@@ -9,11 +9,6 @@ class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
 
     std::map<const std::vector<int>, Bucket> buckets;
     int size;
-    enum {FIFO,LIFO,RANDOM};
-    int queue;
-    mt19937 gen;
-    minstd_rand0 gen2;
-    bool minstd;
 
     std::vector<ScalarEvaluator *> evaluators;
     /*

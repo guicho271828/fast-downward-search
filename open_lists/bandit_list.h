@@ -16,18 +16,35 @@ template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
     deque<Entry> bucket;
 public:
-    // BucketLever() : Lever<Reward,Entry>() {};
+    int queue = -1;
     BucketLever(){}
     ~BucketLever(){}
     Entry pull() {
-        Entry e = bucket.back();
-        bucket.pop_back();
-        return e;
+        Entry result = bucket.front();
+        switch (queue){
+        case FIFO:
+            bucket.pop_front();
+            break;
+        case LIFO:
+            result = bucket.back();
+            bucket.pop_back();
+            break;
+        case RANDOM_O:{
+            int i = g_rng(bucket.size());
+            auto it = bucket.begin()+i;
+            result = *it;
+            bucket.erase(it);
+            break;
+        }
+        default:
+            assert(false);
+        }
+        return result;
     }
     void push(const Entry &e) {
-        // emulates lifo
-        bucket.push_back(e);
-    }
+            // emulates lifo
+            bucket.push_back(e);
+        }
     bool empty(){return bucket.empty();}
     int size(){return bucket.size();}
     void erase(typename deque<Entry>::iterator it){
@@ -45,6 +62,7 @@ template<class Reward, class Entry, template<class,class,template<class,class> c
 class Plateau : public B<Reward,Entry,BucketLever> {
     typedef BucketLever<Reward,Entry> BL;
 public:
+    int queue = -1;
     Plateau():B<Reward,Entry,BucketLever>(){};
     ~Plateau(){};
     bool empty(){
@@ -85,6 +103,11 @@ public:
         }
         cout << "] best: " << best_index << endl ;
     };
+    BL& get_lever(int depth){
+        BL &tmp = this->levers[depth];
+        tmp.queue=queue;
+        return tmp;
+    }
 };
 
 template<class Entry, template<class,class,template<class,class> class> class B>

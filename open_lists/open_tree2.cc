@@ -79,6 +79,7 @@ OpenList<Entry> *OpenDTree<Entry>::_parse(OptionParser &parser) {
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     parser.add_option<bool>("helpers", "Count the helper nodes", "false");
     parser.add_option<bool>("open", "Count the open nodes", "true");
+    parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "0");
     Options opts = parser.parse();
 
     if (parser.dry_run())
