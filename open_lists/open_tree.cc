@@ -97,7 +97,7 @@ Entry OpenTree<Entry>::remove_min(vector<int> *key) {
     if (OpenList<Entry>::emit_frontier)
         counts[it->first]--;
     // root->dump();
-    auto result = root->search_and_cleanup(db);
+    auto result = root->search_and_cleanup(db,queue);
     // cout << "-->" << endl;
     // root->dump();
     // cout << "removed " << *result << endl;

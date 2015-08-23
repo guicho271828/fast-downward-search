@@ -75,7 +75,7 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
             int depth = g_rng(max_depth());
             auto branches = branches_with_depth(depth);
             auto it = g_rng.choose<auto>(branches);
-            return it->search();
+            return it->search(queue);
         }
         }
     }
@@ -84,7 +84,7 @@ TreeNode<Entry>* TreeNode<Entry>::search(int queue) {
     auto it = children.begin();
     int i = g_rng(children.size());
     for (int j = 0 ; j < i ; j++) it++;
-    return it->search();
+    return it->search(queue);
 }
 
 template<class Entry>
