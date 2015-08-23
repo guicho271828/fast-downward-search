@@ -13,7 +13,7 @@ class OptionParser;
 class Options;
 class ScalarEvaluator;
 
-enum QueueType {FIFO,LIFO,RANDOM_O};
+enum {FIFO,LIFO,RANDOM_O};
 
 
 template<class Entry>

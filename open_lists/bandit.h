@@ -42,14 +42,8 @@ class Bandit {
     L* last_selected = nullptr;
 public:
     map<int,L,greater<int>> levers;
-    int queue;
     Bandit(){};
     ~Bandit(){};
-    L& get_lever(int depth){
-        L &tmp = levers[depth];
-        tmp.queue=queue;
-        return tmp;
-    }
     int get_play(){return play;};
     virtual L* select() final {
         assert(!levers.empty());
