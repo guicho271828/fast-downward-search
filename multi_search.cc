@@ -35,23 +35,21 @@ SearchStatus MultiSearch::step() {
 
     for (auto engine : engines){
         current_engine = engine;
-        switch (engine->step()){
-        case SOLVED:
-            set_plan(engine->get_plan());
-            return SOLVED ;
-        case FAILED: failed_count++ ;
+        if(expanded[engine].empty()){
+            switch (engine->step()){
+            case SOLVED:
+                set_plan(engine->get_plan());
+                return SOLVED ;
+            case FAILED: failed_count++ ;
+            }
+            if (failed_count == engines.size())
+                return FAILED;
         }
+        auto args = expanded[engine].front();
+        expanded[engine].pop_front();
+        engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
     }
-    if (failed_count == engines.size())
-        return FAILED;
 
-    for (auto engine : engines){
-        if(!expanded[engine].empty()){
-            auto args = expanded[engine].front();
-            expanded[engine].pop_front();
-            engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
-        }
-    }
     return IN_PROGRESS;
 }
 
