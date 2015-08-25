@@ -17,7 +17,8 @@ SearchEngine::SearchEngine(const Options &opts)
       solution_found(false),
       search_space(OperatorCost(opts.get_enum("cost_type"))),
       cost_type(OperatorCost(opts.get_enum("cost_type"))),
-      max_time(opts.get<double>("max_time")) {
+      max_time(opts.get<double>("max_time")),
+      main_engine(this){
     
     if (opts.get<int>("bound") < 0) {
         cerr << "error: negative cost bound " << opts.get<int>("bound") << endl;

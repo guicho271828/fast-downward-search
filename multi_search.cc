@@ -8,6 +8,8 @@
 #include "plugin.h"
 #include "successor_generator.h"
 #include "sum_evaluator.h"
+#include "global_state.h"
+#include "global_operator.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -17,6 +19,9 @@ using namespace std;
 MultiSearch::MultiSearch(const Options &opts)
     : SearchEngine(opts),
       engines(opts.get_list<SearchEngine *>("engines")) {
+    for (auto engine : engines){
+        engine->main_engine = this;
+    }
 }
 
 void MultiSearch::initialize() {
@@ -38,7 +43,23 @@ SearchStatus MultiSearch::step() {
     }
     if (failed_count == engines.size())
         return FAILED;
+
+    for (auto engine : engines){
+        if(!expanded[engine].empty()){
+            auto args = expanded[engine].front();
+            expanded[engine].pop_front();
+            engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
+        }
+    }
     return IN_PROGRESS;
+}
+
+void MultiSearch::per_node(const GlobalState &succ,
+                           const GlobalState &state,
+                           const GlobalOperator *op,
+                           const bool is_preferred){
+    
+    expanded[this].push_back(PerNodeArgs(succ,state,op,is_preferred));
 }
 
 void MultiSearch::print_statistics() const {

@@ -99,7 +99,7 @@ SearchStatus EagerSearch::step() {
       continue;
     auto succ = g_state_registry->get_successor_state(s, *op);
     statistics.inc_generated();
-    per_node(succ, s, op, (preferred_ops.find(op) != preferred_ops.end())) ;
+    main_engine->per_node(succ, s, op, (preferred_ops.find(op) != preferred_ops.end())) ;
   }
   return IN_PROGRESS;
 }
