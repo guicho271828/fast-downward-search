@@ -183,6 +183,45 @@ public:
     ~EpsilonGreedy(){};
 };
 
+template<class Reward, class Entry, template<typename,typename> class LT>
+class FirstBandit : public Bandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
+public:
+    explicit FirstBandit(){};
+    ~FirstBandit(){};
+    L* do_select(){
+        for (auto &lever : this->levers){
+            if (lever.second.available()){
+                return &(lever.second);
+            }
+        }
+    };
+    Reward score(L& lever){
+        Reward x = numeric_limits<Reward>::quiet_NaN();
+        return x;
+    };
+};
+
+template<class Reward, class Entry, template<typename,typename> class LT>
+class LastBandit : public Bandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
+public:
+    explicit LastBandit(){};
+    ~LastBandit(){};
+    L* do_select(){
+        L* last = nullptr;
+        for (auto &lever : this->levers){
+            if (lever.second.available()){
+                last = &(lever.second);
+            }
+        }
+        return last;
+    };
+    Reward score(L& lever){
+        Reward x = numeric_limits<Reward>::quiet_NaN();
+        return x;
+    };
+};
 
 
 
