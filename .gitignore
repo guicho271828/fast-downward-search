@@ -12,3 +12,4 @@ TAGS
 /GRTAGS
 /GSYMS
 /GTAGS
+/Makefile.temp*
