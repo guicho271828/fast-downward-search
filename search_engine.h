@@ -53,6 +53,7 @@ public:
     void set_bound(int b) {bound = b; }
     int get_bound() {return bound; }
     static void add_options_to_parser(OptionParser &parser);
+    virtual void per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred) = 0;
 };
 
 
