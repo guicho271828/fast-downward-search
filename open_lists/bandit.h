@@ -190,11 +190,15 @@ public:
     explicit FirstBandit(){};
     ~FirstBandit(){};
     L* do_select(){
+        // since levers are sorted according to greater<int>
+        L* last = nullptr;
         for (auto &lever : this->levers){
             if (lever.second.available()){
-                return &(lever.second);
+                // smallest index/depth
+                last = &(lever.second);
             }
         }
+        return last;
     };
     Reward score(L& lever){
         Reward x = numeric_limits<Reward>::quiet_NaN();
@@ -209,13 +213,12 @@ public:
     explicit LastBandit(){};
     ~LastBandit(){};
     L* do_select(){
-        L* last = nullptr;
         for (auto &lever : this->levers){
             if (lever.second.available()){
-                last = &(lever.second);
+                // largest index/depth
+                return &(lever.second);
             }
         }
-        return last;
     };
     Reward score(L& lever){
         Reward x = numeric_limits<Reward>::quiet_NaN();
