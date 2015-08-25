@@ -58,6 +58,58 @@ public:
 };
 
 
+
+
+template<class Reward, class Entry>
+class FirstPlateau : public Plateau<Reward,Entry,FirstBandit> {
+public:
+    FirstPlateau(int _queue) : Plateau<Reward,Entry,FirstBandit>() {
+        this->queue=_queue;
+    };
+    ~FirstPlateau(){};
+};
+
+template<class Entry>
+class FirstDepthOpenList : public BanditOpenList<Entry,FirstBandit> {
+    typedef typename BanditOpenList<Entry,FirstBandit>::P P;
+protected:
+    P* make_plateau(){
+        return new FirstPlateau<double,Entry>(this->queue);
+    };
+public:
+    explicit FirstDepthOpenList(const Options &opts);
+    ~FirstDepthOpenList() override = default;
+    static OpenList<Entry> *_parse(OptionParser &parser);
+};
+
+
+
+
+template<class Reward, class Entry>
+class LastPlateau : public Plateau<Reward,Entry,LastBandit> {
+public:
+    LastPlateau(int _queue) : Plateau<Reward,Entry,LastBandit>() {
+        this->queue=_queue;
+    };
+    ~LastPlateau(){};
+};
+
+template<class Entry>
+class LastDepthOpenList : public BanditOpenList<Entry,LastBandit> {
+    typedef typename BanditOpenList<Entry,LastBandit>::P P;
+protected:
+    P* make_plateau(){
+        return new LastPlateau<double,Entry>(this->queue);
+    };
+public:
+    explicit LastDepthOpenList(const Options &opts);
+    ~LastDepthOpenList() override = default;
+    static OpenList<Entry> *_parse(OptionParser &parser);
+};
+
+
+
+
 #include "ucb_list.cc"
 
 // HACK! Need a better strategy of dealing with templates, also in the Makefile.
