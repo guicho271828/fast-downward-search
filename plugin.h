@@ -64,6 +64,10 @@ public:
             "ucb", UCBOpenList<Entry>::_parse);
         Registry<OpenList<Entry > *>::instance()->register_object(
             "rd", RandomDepthOpenList<Entry>::_parse);
+        Registry<OpenList<Entry > *>::instance()->register_object(
+            "fd", FirstDepthOpenList<Entry>::_parse);
+        Registry<OpenList<Entry > *>::instance()->register_object(
+            "ld", LastDepthOpenList<Entry>::_parse);
     }
 };
 
