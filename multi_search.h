@@ -21,11 +21,16 @@ class ScalarEvaluator;
 
 class MultiSearch : public SearchEngine {
 
+    SearchEngine* current_engine;
     vector<SearchEngine *> engines;
-    typedef tuple<const GlobalState&,
-                  const GlobalState&,
-                  const GlobalOperator *&,
-                  const bool&> PerNodeArgs;
+    typedef tuple<const GlobalState,
+                  const GlobalState,
+                  const GlobalOperator *,
+                  const bool> PerNodeArgs;
+    // typedef tuple<const GlobalState&,
+    //               const GlobalState&,
+    //               const GlobalOperator *&,
+    //               const bool&> PerNodeArgs;
     unordered_map<SearchEngine *, deque<PerNodeArgs > > expanded;
 protected:
     virtual void initialize() override;

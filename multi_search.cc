@@ -34,6 +34,7 @@ SearchStatus MultiSearch::step() {
     uint failed_count = 0;
 
     for (auto engine : engines){
+        current_engine = engine;
         switch (engine->step()){
         case SOLVED:
             set_plan(engine->get_plan());
@@ -59,7 +60,9 @@ void MultiSearch::per_node(const GlobalState &succ,
                            const GlobalOperator *op,
                            const bool is_preferred){
     
-    expanded[this].push_back(PerNodeArgs(succ,state,op,is_preferred));
+    auto &vec = expanded[current_engine];
+    const auto &args = PerNodeArgs(succ,state,op,is_preferred);
+    vec.push_back(args);
 }
 
 void MultiSearch::print_statistics() const {
