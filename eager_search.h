@@ -14,6 +14,7 @@ class ScalarEvaluator;
 
 class EagerSearch : public SearchEngine {
 
+    bool complete_search;
     bool reinsert_open;
     std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
@@ -33,7 +34,7 @@ public:
     virtual ~EagerSearch() = default;
     virtual void initialize() override;
     virtual SearchStatus step() override;
-
+    virtual void save_plan_if_necessary() const override;
     virtual void print_statistics() const override;
 
     void dump_search_space() const;

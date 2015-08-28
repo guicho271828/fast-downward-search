@@ -25,7 +25,8 @@ EagerSearch::EagerSearch(const Options &opts)
   : SearchEngine(opts),
     open_list(opts.get<OpenList<StateID> *>("open")),
     preferred_operator_heuristics(opts.get_list<Heuristic *>("preferred")),
-    reinsert_open(opts.get<bool>("reinsert_open")){
+    reinsert_open(opts.get<bool>("reinsert_open")),
+    complete_search(opts.get<bool>("complete_search")){
 }
 
 void EagerSearch::initialize() {
@@ -76,14 +77,31 @@ void EagerSearch::print_statistics() const {
   search_space.print_statistics();
 }
 
+void EagerSearch::save_plan_if_necessary() const {
+    if (!complete_search){
+        SearchEngine::save_plan_if_necessary();
+    }
+}
+
 SearchStatus EagerSearch::step() {
   auto n = fetch_next_node();
-  if (!n.second)
-    return FAILED;
+  if (!n.second){
+      if (found_solution()){
+          return SOLVED;
+      }else{
+          return FAILED;
+      }
+  }
   auto node = n.first;
   auto s = node.get_state();
-  if (check_goal_and_set_plan(s))
-    return SOLVED;
+  if (check_goal_and_set_plan(s)){
+      if (complete_search){
+          save_plan(get_plan(),true);
+          bound = node.get_real_g();
+      }else{
+          return SOLVED;
+      }
+  }
   vector<const GlobalOperator *> applicable_ops;
   set<const GlobalOperator *> preferred_ops;
   g_successor_generator->generate_applicable_ops(s, applicable_ops);
