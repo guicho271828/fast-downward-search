@@ -229,6 +229,7 @@ static SearchEngine *_parse(OptionParser &parser) {
   parser.add_list_option<Heuristic *>("preferred", "use preferred operators of these heuristics", "[]");
   parser.add_option<bool>("reopen_closed", "This option is ignored.", "true");
   parser.add_option<bool>("reinsert_open", "Always reinsert the open node to the open list", "false");
+  parser.add_option<bool>("complete_search", "Search until all (optimal) solutions are found", "false");
   SearchEngine::add_options_to_parser(parser);
   Options opts = parser.parse();
 
