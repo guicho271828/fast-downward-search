@@ -98,13 +98,25 @@ SearchStatus EagerSearch::step() {
   EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics, &search_space);
   if (check_goal_and_set_plan(s)){
       if (complete_search){
-          save_plan(get_plan(),true);
+          // this is too problematic, may produce thouands of solutions!
+          // save_plan(get_plan(),true);
           auto tmplist = dynamic_cast<TieBreakingOpenList<StateID> *>(open_list);
           if (tmplist){
               auto vec = tmplist->get_key(eval_context);
-              boundvec.resize(vec.size(),0);
+              cout << "Setting " << vec << " as the f-bound" << endl;
+              boundvec = vec;
+          }
+      }else{
+          return SOLVED;
+      }
+  }else {
+      if (found_solution()){
+          auto tmplist = dynamic_cast<TieBreakingOpenList<StateID> *>(open_list);
+          if (tmplist){
+              auto vec = tmplist->get_key(eval_context);
               if (vec > boundvec){
-                  cout << "Oh, reached an f-value higher than the optimal solution!" << endl;
+                  cout << "Oh, reached an f-value " << vec
+                       << " higher than the optimal solution!" << endl;
                   cout << "Node count at this point for solution key " << boundvec
                        << " : " << tmplist->counts[boundvec] << endl ;
                   if (found_solution()){
@@ -113,10 +125,7 @@ SearchStatus EagerSearch::step() {
                       return FAILED;
                   }
               }
-              boundvec = vec;
           }
-      }else{
-          return SOLVED;
       }
   }
   vector<const GlobalOperator *> applicable_ops;
@@ -231,8 +240,15 @@ pair<SearchNode, bool> EagerSearch::fetch_next_node() {
     GlobalState s = g_state_registry->lookup_state(id);
     SearchNode node = search_space.get_node(s);
 
-    if (node.is_closed())
-      continue;
+    if (node.is_closed()){
+        EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics, &search_space);
+        auto tmplist = dynamic_cast<TieBreakingOpenList<StateID> *>(open_list);
+        if (tmplist){
+            auto vec = tmplist->get_key(eval_context);
+            --tmplist->counts[vec];
+        }
+        continue;
+    }
 
     node.close();
     assert(!node.is_dead_end());
