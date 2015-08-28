@@ -105,6 +105,8 @@ SearchStatus EagerSearch::step() {
               boundvec.resize(vec.size(),0);
               if (vec > boundvec){
                   cout << "Oh, reached an f-value higher than the optimal solution!" << endl;
+                  cout << "Node count at this point for solution key " << boundvec
+                       << " : " << tmplist->count[boundvec] << endl ;
                   if (found_solution()){
                       return SOLVED;
                   }else{

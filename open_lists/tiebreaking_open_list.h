@@ -8,7 +8,6 @@ class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef std::deque<Entry> Bucket;
     
     std::map<const std::vector<int>, Bucket> buckets;
-    std::map<const std::vector<int>, int> counts;
     int size;
 
     std::vector<ScalarEvaluator *> evaluators;
@@ -41,6 +40,8 @@ public:
 
     static OpenList<Entry> *_parse(OptionParser &parser);
     virtual int frontier_size() override;
+
+    std::map<const std::vector<int>, int> counts;
 };
 
 #include "tiebreaking_open_list.cc"
