@@ -6,8 +6,9 @@
 template<class Entry>
 class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef std::deque<Entry> Bucket;
-
+    
     std::map<const std::vector<int>, Bucket> buckets;
+    std::map<const std::vector<int>, int> counts;
     int size;
 
     std::vector<ScalarEvaluator *> evaluators;

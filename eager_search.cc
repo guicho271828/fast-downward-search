@@ -15,6 +15,7 @@
 #include "plugin.h"
 #include "successor_generator.h"
 #include "sum_evaluator.h"
+#include "open_lists/abstract_tiebreaking_open_list.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -94,10 +95,24 @@ SearchStatus EagerSearch::step() {
   }
   auto node = n.first;
   auto s = node.get_state();
+  EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics, &search_space);
   if (check_goal_and_set_plan(s)){
       if (complete_search){
           save_plan(get_plan(),true);
-          bound = node.get_real_g();
+          auto tmplist = dynamic_cast<AbstractTieBreakingOpenList<StateID> *>(open_list);
+          if (tmplist){
+              auto vec = tmplist->get_key(eval_context);
+              boundvec.resize(vec.size(),0);
+              if (vec > boundvec){
+                  cout << "Oh, reached an f-value higher than the optimal solution!" << endl;
+                  if (found_solution()){
+                      return SOLVED;
+                  }else{
+                      return FAILED;
+                  }
+              }
+              boundvec = vec;
+          }
       }else{
           return SOLVED;
       }
@@ -105,7 +120,6 @@ SearchStatus EagerSearch::step() {
   vector<const GlobalOperator *> applicable_ops;
   set<const GlobalOperator *> preferred_ops;
   g_successor_generator->generate_applicable_ops(s, applicable_ops);
-  EvaluationContext eval_context = get_context(s, node.get_g(), false, &statistics, &search_space);
   for (Heuristic *heur : preferred_operator_heuristics) {
     if (!eval_context.is_heuristic_infinite(heur)) {
       auto preferred = eval_context.get_preferred_operators(heur);

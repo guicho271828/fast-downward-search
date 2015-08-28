@@ -18,7 +18,7 @@ class EagerSearch : public SearchEngine {
     bool reinsert_open;
     std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
-
+    std::vector<int> boundvec;
 protected:
     OpenList<StateID> *open_list;
     void reward_progress();

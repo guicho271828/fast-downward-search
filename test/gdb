@@ -9,3 +9,5 @@
 
 --heuristic 'h=lmcut()' --search 'eager(ucb([sum([g(),h]),h],frontier=true))' < test/output
 --heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h],frontier=true))' < test/output
+
+--heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h],frontier=true),frontier=true,complete_search=true)' < test/output

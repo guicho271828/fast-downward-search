@@ -54,6 +54,7 @@ void TieBreakingOpenList<Entry>::do_insertion(
     EvaluationContext &eval_context, const Entry &entry) {
     auto key = AbstractTieBreakingOpenList<Entry>::get_key(eval_context);
     buckets[key].push_back(entry);
+    ++counts[key];
     ++size;
 }
 
@@ -90,8 +91,15 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
     }
     if (bucket.empty()){
         buckets.erase(it);
-        if (OpenList<Entry>::emit_frontier)
-            cout << "frontier_size=" << frontier_size() << " evals=" << buckets.begin()->first << endl;
+        if (OpenList<Entry>::emit_frontier){
+            auto it2 = buckets.begin();
+            if (it2 != buckets.end()){
+                auto &key = it2->first;
+                cout << "frontier_size=" << frontier_size()
+                     << " evals=" << key
+                     << " cumulative=" << counts[key] << endl;
+            }
+        }
     }
     return result;
 }
