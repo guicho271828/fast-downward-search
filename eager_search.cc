@@ -99,14 +99,14 @@ SearchStatus EagerSearch::step() {
   if (check_goal_and_set_plan(s)){
       if (complete_search){
           save_plan(get_plan(),true);
-          auto tmplist = dynamic_cast<AbstractTieBreakingOpenList<StateID> *>(open_list);
+          auto tmplist = dynamic_cast<TieBreakingOpenList<StateID> *>(open_list);
           if (tmplist){
               auto vec = tmplist->get_key(eval_context);
               boundvec.resize(vec.size(),0);
               if (vec > boundvec){
                   cout << "Oh, reached an f-value higher than the optimal solution!" << endl;
                   cout << "Node count at this point for solution key " << boundvec
-                       << " : " << tmplist->count[boundvec] << endl ;
+                       << " : " << tmplist->counts[boundvec] << endl ;
                   if (found_solution()){
                       return SOLVED;
                   }else{
