@@ -72,7 +72,7 @@ public:
 
     virtual EvaluationResult compute_result(
         EvaluationContext &eval_context) override final;
-
+    int true_evaluation_count = 0;
     std::string get_description() const;
 };
 

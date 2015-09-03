@@ -85,6 +85,7 @@ EvaluationResult Heuristic::compute_result(EvaluationContext &eval_context) {
     
     int heuristic = (*cache)[state];
     if (heuristic == UNINITIALIZED){
+        ++true_evaluation_count;
         heuristic = compute_heuristic(state);
         (*cache)[state] = heuristic;
     }
