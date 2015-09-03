@@ -6,7 +6,7 @@
 // 3. removing "eager_greedy", "astar"
 
 #include "eager_search.h"
-
+  
 #include "evaluation_context.h"
 #include "g_evaluator.h"
 #include "globals.h"
@@ -16,6 +16,8 @@
 #include "successor_generator.h"
 #include "sum_evaluator.h"
 
+#include <typeinfo>
+#include <cxxabi.h>
 #include <cassert>
 #include <cstdlib>
 #include <set>
@@ -74,6 +76,16 @@ void EagerSearch::print_checkpoint_line(int g) const {
 void EagerSearch::print_statistics() const {
   statistics.print_detailed_statistics();
   search_space.print_statistics();
+  set<Heuristic *> hset;
+  open_list->get_involved_heuristics(hset);
+  for ( auto h : hset ){
+      int     status;
+      char   *realname;
+      realname = abi::__cxa_demangle(typeid(*h).name(), 0, 0, &status);
+      // std::cout << ti.name() << "\t=> " << realname << "\t: " << status << '\n';
+      cout << "TrueEvaluation " << realname << " " << h->true_evaluation_count << endl;
+      free(realname);
+  }
 }
 
 SearchStatus EagerSearch::step() {

@@ -49,7 +49,6 @@ SearchStatus MultiSearch::step() {
         expanded[engine].pop_front();
         engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
     }
-
     return IN_PROGRESS;
 }
 
