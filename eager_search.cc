@@ -83,7 +83,7 @@ void EagerSearch::print_statistics() const {
       char   *realname;
       realname = abi::__cxa_demangle(typeid(*h).name(), 0, 0, &status);
       // std::cout << ti.name() << "\t=> " << realname << "\t: " << status << '\n';
-      cout << "TrueEvaluation " << realname << " " << h->true_evaluation_count << endl;
+      cout << "TrueEvaluation " << realname << " " << h << " " << h->true_evaluation_count << endl;
       free(realname);
   }
 }
