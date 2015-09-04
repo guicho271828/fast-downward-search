@@ -52,14 +52,15 @@ SearchStatus MultiSearch::step() {
     return IN_PROGRESS;
 }
 
-void MultiSearch::per_node(const GlobalState &succ,
-                           const GlobalState &state,
-                           const GlobalOperator *op,
-                           const bool is_preferred){
+bool MultiSearch::per_node(const GlobalState &succ,
+                              const GlobalState &state,
+                              const GlobalOperator *op,
+                              const bool is_preferred){
     
     auto &vec = expanded[current_engine];
     const auto &args = PerNodeArgs(succ,state,op,is_preferred);
     vec.push_back(args);
+    return false;
 }
 
 void MultiSearch::print_statistics() const {

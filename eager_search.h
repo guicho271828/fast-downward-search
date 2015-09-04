@@ -21,10 +21,10 @@ class EagerSearch : public SearchEngine {
 protected:
     OpenList<StateID> *open_list;
     void reward_progress();
-    void per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
-    void per_node_new(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
-    void per_node_reopen(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
-    void per_node_update_parent(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
+    bool per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
+    bool per_node_new(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
+    bool per_node_reopen(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
+    bool per_node_update_parent(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
     void print_checkpoint_line(int g) const;
     virtual std::pair<SearchNode, bool> fetch_next_node();
 

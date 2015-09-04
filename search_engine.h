@@ -54,7 +54,7 @@ public:
     int get_bound() {return bound; }
     static void add_options_to_parser(OptionParser &parser);
     SearchEngine* main_engine;
-    virtual void per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred) = 0;
+    virtual bool per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred) = 0;
 };
 
 
