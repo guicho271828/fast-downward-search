@@ -133,6 +133,9 @@ bool EagerSearch::per_node(const GlobalState &succ,
                (succ_node.get_g() == node.get_g() + get_adjusted_cost(*op))){
         // since h is path-independent and f = g+h, f is also the same !
         return per_node_update_parent(succ,state,op,is_preferred);
+    } else {
+        // 
+        return false;
     }
 }
 
