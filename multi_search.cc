@@ -35,7 +35,7 @@ SearchStatus MultiSearch::step() {
 
     for (auto engine : engines){
         current_engine = engine;
-        if(expanded[engine].empty()){
+        while(expanded[engine].empty()){
             switch (engine->step()){
             case SOLVED:
                 set_plan(engine->get_plan());
