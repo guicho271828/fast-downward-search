@@ -2,10 +2,12 @@
 #define OPEN_LISTS_TIEBREAKING_OPEN_LIST_H
 
 #include "abstract_tiebreaking_open_list.h"
+#include "../rng.h"
 
 template<class Entry>
 class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef std::deque<Entry> Bucket;
+    RandomNumberGenerator rng(2016);
 
     std::map<const std::vector<int>, Bucket> buckets;
     int size;

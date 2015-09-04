@@ -80,7 +80,7 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
         bucket.pop_back();
         break;
     case RANDOM_O:{
-        int i = g_rng(bucket.size());
+        int i = rng(bucket.size());
         result = bucket[i];
         bucket.erase(bucket.begin()+i);
         break;
