@@ -4,6 +4,7 @@
 #include "../evaluation_context.h"
 #include "../option_parser.h"
 #include "../scalar_evaluator.h"
+#include "../rng.h"
 
 #include <iostream>
 #include <cassert>
@@ -39,6 +40,7 @@ TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
+    rng.seed(2016);
 }
 
 template<class Entry>
@@ -80,7 +82,7 @@ Entry TieBreakingOpenList<Entry>::remove_min(vector<int> *key) {
         bucket.pop_back();
         break;
     case RANDOM_O:{
-        int i = g_rng(bucket.size());
+        int i = rng(bucket.size());
         result = bucket[i];
         bucket.erase(bucket.begin()+i);
         break;

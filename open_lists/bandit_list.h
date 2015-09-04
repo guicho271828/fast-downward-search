@@ -8,16 +8,20 @@
 #include <limits>
 #include <unordered_map>
 #include <deque>
+#include "../rng.h"
 
 using namespace std;
 
 
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
+    RandomNumberGenerator rng;
     deque<Entry> bucket;
 public:
     int queue = -1;
-    BucketLever(){}
+    BucketLever(){
+        rng.seed(2016);
+    }
     ~BucketLever(){}
     Entry pull() {
         Entry result = bucket.front();
@@ -30,7 +34,7 @@ public:
             bucket.pop_back();
             break;
         case RANDOM_O:{
-            int i = g_rng(bucket.size());
+            int i = rng(bucket.size());
             auto it = bucket.begin()+i;
             result = *it;
             bucket.erase(it);
