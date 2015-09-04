@@ -219,6 +219,8 @@ public:
                 return &(lever.second);
             }
         }
+        assert(false);
+        return nullptr;
     };
     Reward score(L& lever){
         Reward x = numeric_limits<Reward>::quiet_NaN();
