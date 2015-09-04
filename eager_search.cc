@@ -90,12 +90,13 @@ void EagerSearch::print_statistics() const {
 
 SearchStatus EagerSearch::step() {
   auto n = fetch_next_node();
-  assert(!node.is_dead_end());
-  assert(node.closed());
 
   if (!n.second)
     return FAILED;
   auto node = n.first;
+  assert(!node.is_dead_end());
+  assert(node.is_closed());
+  
   auto s = node.get_state();
   if (check_goal_and_set_plan(s))
     return SOLVED;
