@@ -73,10 +73,7 @@ void MultiSearch::print_statistics() const {
         cout << "  Search engine " << i << ":" << endl;
         engine->print_statistics();
         i++;
-        stat += engine->get_statistics();
     }
-    cout << "  Aggregated:" << endl;
-    stat.print_detailed_statistics();
 }
 
 static SearchEngine *_parse(OptionParser &parser) {
