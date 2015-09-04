@@ -42,11 +42,15 @@ SearchStatus MultiSearch::step() {
                 case SOLVED:
                     set_plan(engine->get_plan());
                     return SOLVED ;
-                case FAILED: failed_count++ ;
+                case FAILED: failed_count++ ; break ;
+                case IN_PROGRESS: break;
+                default:
+                    assert(false);
                 }
                 if (failed_count == engines.size())
                     return FAILED;
             }
+            assert(!expanded[engine].empty());
             auto args = expanded[engine].front();
             expanded[engine].pop_front();
             evaluated = engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
@@ -73,10 +77,7 @@ void MultiSearch::print_statistics() const {
         cout << "  Search engine " << i << ":" << endl;
         engine->print_statistics();
         i++;
-        stat += engine->get_statistics();
     }
-    cout << "  Aggregated:" << endl;
-    stat.print_detailed_statistics();
 }
 
 static SearchEngine *_parse(OptionParser &parser) {

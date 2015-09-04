@@ -90,6 +90,9 @@ void EagerSearch::print_statistics() const {
 
 SearchStatus EagerSearch::step() {
   auto n = fetch_next_node();
+  assert(!node.is_dead_end());
+  assert(node.closed());
+
   if (!n.second)
     return FAILED;
   auto node = n.first;
@@ -133,6 +136,9 @@ bool EagerSearch::per_node(const GlobalState &succ,
                (succ_node.get_g() == node.get_g() + get_adjusted_cost(*op))){
         // since h is path-independent and f = g+h, f is also the same !
         return per_node_update_parent(succ,state,op,is_preferred);
+    } else {
+        // closed and do not find a shorter path
+        return false;
     }
 }
 
@@ -146,19 +152,19 @@ bool EagerSearch::per_node_new(const GlobalState &succ,
         get_context(succ,
                      node.get_g() + get_adjusted_cost(*op),
                      is_preferred, &statistics, &search_space);
-    statistics.inc_evaluated_states();
 
     if (open_list->is_dead_end(eval_context)) {
         succ_node.mark_as_dead_end();
         statistics.inc_dead_ends();
-        return true;
+    }else{
+        succ_node.open(node, op);
+        open_list->insert(eval_context, succ.get_id());
+        if (search_progress.check_progress(eval_context)) {
+            print_checkpoint_line(succ_node.get_g());
+            reward_progress();
+        }
     }
-    succ_node.open(node, op);
-    open_list->insert(eval_context, succ.get_id());
-    if (search_progress.check_progress(eval_context)) {
-        print_checkpoint_line(succ_node.get_g());
-        reward_progress();
-    }
+    statistics.inc_evaluated_states();
     return true;
 }
 
@@ -168,7 +174,7 @@ bool EagerSearch::per_node_reopen(const GlobalState &succ,
                                   const bool is_preferred){
     auto succ_node = search_space.get_node(succ);
     auto node = search_space.get_node(state);
-    // We found a new cheapest path to an open or closed state.          
+    // We found a new cheapest path to an open or closed state.
     if (succ_node.is_closed()){
         statistics.inc_reopened();
     }
@@ -176,7 +182,8 @@ bool EagerSearch::per_node_reopen(const GlobalState &succ,
     EvaluationContext eval_context =
         get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
     open_list->insert(eval_context, succ.get_id());
-    return true;
+    
+    return false;
 }
 
 bool EagerSearch::per_node_update_parent(const GlobalState &succ,
@@ -186,15 +193,15 @@ bool EagerSearch::per_node_update_parent(const GlobalState &succ,
     auto succ_node = search_space.get_node(succ);
     auto node = search_space.get_node(state);
     // We found a new parent within the same plateau.
-    if (succ_node.is_closed())
-        return false;
-    succ_node.update_parent(node, op);
-    EvaluationContext eval_context =
-        get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
-    // Assuming the queue is lifo, reinsert the node to the open list
-    // so that the latest information is used
-    open_list->insert(eval_context, succ.get_id());
-    return true;
+    if (!succ_node.is_closed()){
+        succ_node.update_parent(node, op);
+        EvaluationContext eval_context =
+            get_context(succ, succ_node.get_g(), is_preferred, &statistics, &search_space);
+        // Assuming the queue is lifo, reinsert the node to the open list
+        // so that the latest information is used
+        open_list->insert(eval_context, succ.get_id());
+    }    
+    return false;
 }
 
 pair<SearchNode, bool> EagerSearch::fetch_next_node() {
