@@ -7,7 +7,7 @@
 template<class Entry>
 class TieBreakingOpenList : public AbstractTieBreakingOpenList<Entry> {
     typedef std::deque<Entry> Bucket;
-    RandomNumberGenerator rng(2016);
+    RandomNumberGenerator rng;
 
     std::map<const std::vector<int>, Bucket> buckets;
     int size;
