@@ -35,31 +35,35 @@ SearchStatus MultiSearch::step() {
 
     for (auto engine : engines){
         current_engine = engine;
-        if(expanded[engine].empty()){
-            switch (engine->step()){
-            case SOLVED:
-                set_plan(engine->get_plan());
-                return SOLVED ;
-            case FAILED: failed_count++ ;
+        bool evaluated = false;
+        while(! evaluated) {
+            while(expanded[engine].empty()){
+                switch (engine->step()){
+                case SOLVED:
+                    set_plan(engine->get_plan());
+                    return SOLVED ;
+                case FAILED: failed_count++ ;
+                }
+                if (failed_count == engines.size())
+                    return FAILED;
             }
-            if (failed_count == engines.size())
-                return FAILED;
+            auto args = expanded[engine].front();
+            expanded[engine].pop_front();
+            evaluated = engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
         }
-        auto args = expanded[engine].front();
-        expanded[engine].pop_front();
-        engine->per_node(get<0>(args),get<1>(args),get<2>(args),get<3>(args));
     }
     return IN_PROGRESS;
 }
 
-void MultiSearch::per_node(const GlobalState &succ,
-                           const GlobalState &state,
-                           const GlobalOperator *op,
-                           const bool is_preferred){
+bool MultiSearch::per_node(const GlobalState &succ,
+                              const GlobalState &state,
+                              const GlobalOperator *op,
+                              const bool is_preferred){
     
     auto &vec = expanded[current_engine];
     const auto &args = PerNodeArgs(succ,state,op,is_preferred);
     vec.push_back(args);
+    return false;
 }
 
 void MultiSearch::print_statistics() const {

@@ -41,7 +41,7 @@ public:
     virtual ~MultiSearch() = default;
 
     virtual void print_statistics() const override;
-    void per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
+    bool per_node(const GlobalState &succ, const GlobalState &state, const GlobalOperator *op, const bool is_preferred);
     void dump_search_space() const;
 };
 
