@@ -38,8 +38,11 @@ public:
 template<class Reward, class Entry>
 class RandomPlateau : public Plateau<Reward,Entry,RandomBandit> {
 public:
-    RandomPlateau(int _queue) : Plateau<Reward,Entry,RandomBandit>() {
+    RandomPlateau(int _queue, int seed2) : Plateau<Reward,Entry,RandomBandit>() {
+        // inherited from Plateau
         this->queue=_queue;
+        // inherited from RandomBandit
+        this->rng(seed2);
     };
     ~RandomPlateau(){};
 };
@@ -47,9 +50,11 @@ public:
 template<class Entry>
 class RandomDepthOpenList : public BanditOpenList<Entry,RandomBandit> {
     typedef typename BanditOpenList<Entry,RandomBandit>::P P;
+    int seed2;
 protected:
     P* make_plateau(){
-        return new RandomPlateau<double,Entry>(this->queue);
+        // this->queue : inherited from AbstractTieBreakingOpenList
+        return new RandomPlateau<double,Entry>(this->queue,seed2);
     };
 public:
     explicit RandomDepthOpenList(const Options &opts);

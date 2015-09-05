@@ -37,7 +37,8 @@ OpenList<Entry> *UCBOpenList<Entry>::_parse(OptionParser &parser) {
 
 template<class Entry>
 RandomDepthOpenList<Entry>::RandomDepthOpenList(const Options &opts)
-    : BanditOpenList<Entry,RandomBandit>(opts){
+    : BanditOpenList<Entry,RandomBandit>(opts),
+      seed2(opts.get<int>("seed2")){
     cout << "Initializing Random Depth openlist" << endl;
 }
 
@@ -53,6 +54,7 @@ OpenList<Entry> *RandomDepthOpenList<Entry>::_parse(OptionParser &parser) {
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
+    parser.add_option<int>("seed2", "seed for the random generator (for depth tiebreaking).", "1");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "1");
     Options opts = parser.parse();
     if (parser.dry_run())
