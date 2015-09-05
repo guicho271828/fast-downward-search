@@ -14,7 +14,8 @@ using namespace std;
 
 template<class Entry, template<class,class,template<class,class> class> class B>
 BanditOpenList<Entry,B>::BanditOpenList(const Options &opts)
-    : AbstractTieBreakingOpenList<Entry>(opts){
+    : AbstractTieBreakingOpenList<Entry>(opts),
+      seed3(opts.get<int>("seed3")){
 }
 
 template<class Entry, template<class,class,template<class,class> class> class B>

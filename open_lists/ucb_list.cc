@@ -28,6 +28,7 @@ OpenList<Entry> *UCBOpenList<Entry>::_parse(OptionParser &parser) {
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     parser.add_option<double>("k", "Exploration ratio k of UCB index \\mu + \\sqrt{ k ln(n)/n_i }. k<0.5 is unsafe.", "0.5");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "1");
+    parser.add_option<int>("seed3", "seed for the random generator (for final tiebreaking).", "1");
     Options opts = parser.parse();
     if (parser.dry_run())
         return 0;
@@ -55,6 +56,7 @@ OpenList<Entry> *RandomDepthOpenList<Entry>::_parse(OptionParser &parser) {
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     parser.add_option<int>("seed2", "seed for the random generator (for depth tiebreaking).", "1");
+    parser.add_option<int>("seed3", "seed for the random generator (for final tiebreaking).", "1");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "1");
     Options opts = parser.parse();
     if (parser.dry_run())
@@ -82,6 +84,7 @@ OpenList<Entry> *FirstDepthOpenList<Entry>::_parse(OptionParser &parser) {
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "1");
+    parser.add_option<int>("seed3", "seed for the random generator (for final tiebreaking).", "1");
     Options opts = parser.parse();
     if (parser.dry_run())
         return 0;
@@ -108,6 +111,7 @@ OpenList<Entry> *LastDepthOpenList<Entry>::_parse(OptionParser &parser) {
         "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "1");
+    parser.add_option<int>("seed3", "seed for the random generator (for final tiebreaking).", "1");
     Options opts = parser.parse();
     if (parser.dry_run())
         return 0;
