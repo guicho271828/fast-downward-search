@@ -8,6 +8,7 @@
 #include <limits>
 #include <unordered_map>
 #include <deque>
+#include <utility>
 #include "../rng.h"
 
 using namespace std;
@@ -15,13 +16,14 @@ using namespace std;
 
 template<class Reward, class Entry>
 class BucketLever : public Lever<Reward,Entry> {
-    RandomNumberGenerator rng;
     deque<Entry> bucket;
 public:
+    RandomNumberGenerator rng;
     int queue = -1;
-    BucketLever(){
-        rng.seed(2016);
+    BucketLever(int _queue, int _seed3) : queue(_queue){
+        rng.seed(_seed3);
     }
+    BucketLever(){}
     ~BucketLever(){}
     Entry pull() {
         Entry result = bucket.front();
@@ -66,8 +68,11 @@ template<class Reward, class Entry, template<class,class,template<class,class> c
 class Plateau : public B<Reward,Entry,BucketLever> {
     typedef BucketLever<Reward,Entry> BL;
 public:
-    int queue = -1;
-    Plateau():B<Reward,Entry,BucketLever>(){};
+    const int queue;
+    const int seed3;            // default seed3
+    Plateau(int _queue, int _seed3) :
+        B<Reward,Entry,BucketLever>(),
+        queue(_queue), seed3(_seed3){};
     ~Plateau(){};
     bool empty(){
         for (auto &lever : this->levers){
@@ -108,9 +113,15 @@ public:
         cout << "] best: " << best_index << endl ;
     };
     BL& get_lever(int depth){
-        BL &tmp = this->levers[depth];
-        tmp.queue=queue;
-        return tmp;
+        auto it = this->levers.find(depth);
+        if (it != this->levers.end()){
+            return it->second;
+        }else{
+            BL& bl=this->levers[depth];
+            bl.queue=queue;
+            bl.rng.seed(seed3);
+            return bl;
+        }
     }
 };
 
@@ -149,6 +160,7 @@ protected:
                               const Entry &entry) override;
     virtual P* make_plateau() = 0;
 public:
+    const int seed3;
     explicit BanditOpenList(const Options &opts);
     ~BanditOpenList() override = default;
     virtual Entry remove_min(vector<int> *key = 0) override;

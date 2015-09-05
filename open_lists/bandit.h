@@ -3,7 +3,7 @@
 #define OPEN_LISTS_BANDIT_H
 #include <limits>
 // #include <deque>
-#include <random>
+#include "../rng.h"
 #include <unordered_map>
 #include <map>
 #include <cassert>
@@ -122,7 +122,7 @@ template<class Reward, class Entry, template<typename,typename> class LT>
 class RandomBandit : public Bandit<Reward,Entry,LT> {
     typedef LT<Reward,Entry> L;
 protected:
-    mt19937 gen = mt19937(1);
+    RandomNumberGenerator rng;
 public:
     explicit RandomBandit(){};
     ~RandomBandit(){};
@@ -134,8 +134,8 @@ public:
             }
         }
         assert(!availables.empty());
-        uniform_int_distribution<> dis(0,availables.size()-1);
-        return availables[dis(gen)];
+        int i = rng(availables.size());
+        return availables[i];
     };
     Reward score(L& lever){
         Reward x = numeric_limits<Reward>::quiet_NaN();

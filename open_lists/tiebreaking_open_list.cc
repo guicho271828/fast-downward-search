@@ -25,7 +25,7 @@ OpenList<Entry> *TieBreakingOpenList<Entry>::_parse(OptionParser &parser) {
         "allow unsafe pruning when the main evaluator regards a state a dead end",
         "false");
     parser.add_option<int>("queue", "queue order, 0:fifo,1:lifo,2:random", "0");
-    parser.add_option<int>("seed", "seed for random. ignored", "1");
+    parser.add_option<int>("seed", "seed for randomness.", "1");
     parser.add_option<bool>("minstd", "use minstd. ignored", "false");
     parser.add_option<bool>("frontier", "Print the size of the frontier when new one is visited", "false");
     Options opts = parser.parse();
@@ -40,7 +40,7 @@ TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
-    rng.seed(2016);
+    rng.seed(opts.get<bool>("seed"));
 }
 
 template<class Entry>
