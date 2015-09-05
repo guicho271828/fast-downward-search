@@ -40,7 +40,7 @@ TieBreakingOpenList<Entry>::TieBreakingOpenList(const Options &opts)
     : AbstractTieBreakingOpenList<Entry>(opts),
       size(0), evaluators(opts.get_list<ScalarEvaluator *>("evals")),
       allow_unsafe_pruning(opts.get<bool>("unsafe_pruning")) {
-    rng.seed(opts.get<bool>("seed"));
+    rng.seed(opts.get<int>("seed"));
 }
 
 template<class Entry>
