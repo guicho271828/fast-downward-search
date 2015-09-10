@@ -39,7 +39,8 @@ public:
             int i = rng(bucket.size());
             auto it = bucket.begin()+i;
             result = *it;
-            bucket.erase(it);
+            *it = bucket.back();
+            bucket.pop_back();
             break;
         }
         default:
