@@ -128,13 +128,18 @@ public:
     ~RandomBandit(){};
     L* do_select(){
         deque<L*> availables;
+        deque<int> indices;
+        int j = this->levers.size();
         for (auto &lever : this->levers){
+            --j;
             if (lever.second.available()){
                 availables.push_back(&(lever.second));
+                indices.push_back(j);
             }
         }
         assert(!availables.empty());
         int i = rng(availables.size());
+        cout << "rd: " << indices[i] << endl;
         return availables[i];
     };
     Reward score(L& lever){
@@ -192,12 +197,17 @@ public:
     L* do_select(){
         // since levers are sorted according to greater<int>
         L* last = nullptr;
+        int i = this->levers.size();
+        int j = this->levers.size();
         for (auto &lever : this->levers){
+            --j;
             if (lever.second.available()){
                 // smallest index/depth
                 last = &(lever.second);
+                i = j;
             }
         }
+        cout << "rd: " << i << endl;
         return last;
     };
     Reward score(L& lever){
@@ -213,9 +223,12 @@ public:
     explicit LastBandit(){};
     ~LastBandit(){};
     L* do_select(){
+        int i = this->levers.size();
         for (auto &lever : this->levers){
+            --i;
             if (lever.second.available()){
                 // largest index/depth
+                cout << "rd: " << i << endl;
                 return &(lever.second);
             }
         }
