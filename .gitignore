@@ -7,9 +7,9 @@ downward-*
 */TAGS
 TAGS
 /Makefile.depend
-/sas_plan
 /GPATH
 /GRTAGS
 /GSYMS
 /GTAGS
 /Makefile.temp*
+sas_plan*
