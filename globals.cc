@@ -70,15 +70,15 @@ void save_plan(const vector<const GlobalOperator *> &plan,
     }
     ofstream outfile(filename.str());
     for (size_t i = 0; i < plan.size(); ++i) {
-        cout << plan[i]->get_name() << " (" << plan[i]->get_cost() << ")" << endl;
+        // cout << plan[i]->get_name() << " (" << plan[i]->get_cost() << ")" << endl;
         outfile << "(" << plan[i]->get_name() << ")" << endl;
     }
     int plan_cost = calculate_plan_cost(plan);
     outfile << "; cost = " << plan_cost << " ("
             << (is_unit_cost() ? "unit cost" : "general cost") << ")" << endl;
     outfile.close();
-    cout << "Plan length: " << plan.size() << " step(s)." << endl;
-    cout << "Plan cost: " << plan_cost << endl;
+    // cout << "Plan length: " << plan.size() << " step(s)." << endl;
+    // cout << "Plan cost: " << plan_cost << endl;
     ++g_num_previously_generated_plans;
 }
 
