@@ -56,18 +56,18 @@ public:
             "alt", AlternationOpenList<Entry>::_parse);
         /* Registry<OpenList<Entry > *>::instance()->register_object( */
         /*     "pareto", ParetoOpenList<Entry>::_parse); */
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "tree", OpenTree<Entry>::_parse);
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "tree", OpenTree<Entry>::_parse); */
         /* Registry<OpenList<Entry > *>::instance()->register_object( */
         /*     "dtree", OpenDTree<Entry>::_parse); */
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "ucb", UCBOpenList<Entry>::_parse);
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "rd", RandomDepthOpenList<Entry>::_parse);
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "fd", FirstDepthOpenList<Entry>::_parse);
-        Registry<OpenList<Entry > *>::instance()->register_object(
-            "ld", LastDepthOpenList<Entry>::_parse);
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "ucb", UCBOpenList<Entry>::_parse); */
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "rd", RandomDepthOpenList<Entry>::_parse); */
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "fd", FirstDepthOpenList<Entry>::_parse); */
+        /* Registry<OpenList<Entry > *>::instance()->register_object( */
+        /*     "ld", LastDepthOpenList<Entry>::_parse); */
     }
 };
 

@@ -90,13 +90,13 @@ HEADERS = \
           open_lists/open_list.h \
           open_lists/standard_scalar_open_list.h \
           open_lists/abstract_tiebreaking_open_list.h \
-          open_lists/tiebreaking_open_list.h \
-          open_lists/bandit.h \
-          open_lists/bandit_list.h \
-          open_lists/ucb_list.h \
-          open_lists/treenode.h \
-          open_lists/open_tree.h \
-          multi_search.h
+          open_lists/tiebreaking_open_list.h 
+          # open_lists/bandit.h \
+          # open_lists/bandit_list.h \
+          # open_lists/ucb_list.h \
+          # open_lists/treenode.h \
+          # open_lists/open_tree.h
+          # multi_search.h
 	  # open_lists/open_tree2.h \
           # \
           # lp_internals.h \
@@ -124,21 +124,21 @@ HEADERS += blind_search_heuristic.h
 # HEADERS += ff_heuristic.h
 # HEADERS += goal_count_heuristic.h
 # HEADERS += hm_heuristic.h
-HEADERS += lm_cut_heuristic.h
+# HEADERS += lm_cut_heuristic.h
 # HEADERS += max_heuristic.h
 # HEADERS += diversity_heuristic.h
 
-HEADERS += merge_and_shrink/labels.h \
-           merge_and_shrink/merge_and_shrink_heuristic.h \
-	   merge_and_shrink/merge_dfp.h \
-           merge_and_shrink/merge_linear.h \
-           merge_and_shrink/merge_strategy.h \
-           merge_and_shrink/shrink_bisimulation.h \
-           merge_and_shrink/shrink_bucket_based.h \
-           merge_and_shrink/shrink_fh.h \
-           merge_and_shrink/shrink_random.h \
-           merge_and_shrink/shrink_strategy.h \
-           merge_and_shrink/transition_system.h
+# HEADERS += merge_and_shrink/labels.h \
+#            merge_and_shrink/merge_and_shrink_heuristic.h \
+# 	   merge_and_shrink/merge_dfp.h \
+#            merge_and_shrink/merge_linear.h \
+#            merge_and_shrink/merge_strategy.h \
+#            merge_and_shrink/shrink_bisimulation.h \
+#            merge_and_shrink/shrink_bucket_based.h \
+#            merge_and_shrink/shrink_fh.h \
+#            merge_and_shrink/shrink_random.h \
+#            merge_and_shrink/shrink_strategy.h \
+#            merge_and_shrink/transition_system.h
 
 # HEADERS += landmarks/exploration.h \
 #            landmarks/h_m_landmarks.h \
