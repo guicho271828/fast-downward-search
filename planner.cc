@@ -43,7 +43,7 @@ int main(int argc, const char **argv) {
     search_timer.stop();
     g_timer.stop();
 
-    engine->save_plan_if_necessary();
+    engine->dump_all_paths();
     engine->print_statistics();
     cout << "Search time: " << search_timer << endl;
     cout << "Total time: " << g_timer << endl;
