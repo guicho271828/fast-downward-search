@@ -45,6 +45,7 @@ public:
     virtual SearchStatus step() = 0;
     virtual void print_statistics() const;
     virtual void save_plan_if_necessary() const;
+    void dump_all_paths() const;
     bool found_solution() const;
     SearchStatus get_status() const;
     const Plan &get_plan() const;

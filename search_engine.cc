@@ -32,6 +32,9 @@ SearchEngine::~SearchEngine() {
 
 void SearchEngine::print_statistics() const {
 }
+void SearchEngine::dump_all_paths() const {
+    search_space.dump_all_paths(bound);
+}
 
 EvaluationContext SearchEngine::get_context(const GlobalState &state,
                                             int g, bool is_preferred,
