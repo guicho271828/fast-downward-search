@@ -33,7 +33,7 @@ SearchEngine::~SearchEngine() {
 void SearchEngine::print_statistics() const {
 }
 void SearchEngine::dump_all_paths() const {
-    search_space.dump_all_paths(bound);
+    search_space.dump_all_paths(bound-1);
 }
 
 EvaluationContext SearchEngine::get_context(const GlobalState &state,

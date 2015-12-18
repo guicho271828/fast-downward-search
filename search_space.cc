@@ -190,6 +190,7 @@ void SearchSpace::dump() const {
 }
 
 void SearchSpace::dump_all_paths(uint length) const {
+    int i = 0;
     for (PerStateInformation<SearchNodeInfo>::const_iterator it =
              search_node_infos.begin(g_state_registry);
          it != search_node_infos.end(g_state_registry); ++it) {
@@ -197,10 +198,12 @@ void SearchSpace::dump_all_paths(uint length) const {
         GlobalState s = g_state_registry->lookup_state(id);
         vector<const GlobalOperator *> path;
         trace_path(s,path);
-        if (path.size() <= length){
+        if (path.size() == length){
             save_plan(path, true);
+            i++;
         }
     }
+    cout << "paths written: " << i << endl;
 }
 
 void SearchSpace::print_statistics() const {
