@@ -4,6 +4,7 @@
 #include "search_engine.h"
 #include "timer.h"
 #include "utilities.h"
+#include "global_operator.h"
 
 #include <iostream>
 #include <new>
