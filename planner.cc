@@ -4,7 +4,6 @@
 #include "search_engine.h"
 #include "timer.h"
 #include "utilities.h"
-#include "global_operator.h"
 
 #include <iostream>
 #include <new>
@@ -39,7 +38,9 @@ int main(int argc, const char **argv) {
         exit_with(EXIT_INPUT_ERROR);
     }
 
+    vector<const GlobalOperator *> ops;
     for (auto &op : g_operators){
-        op.dump();
+        ops.push_back(&op);
     }
+    save_plan(ops);
 }
