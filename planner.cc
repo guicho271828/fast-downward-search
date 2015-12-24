@@ -42,5 +42,5 @@ int main(int argc, const char **argv) {
     for (auto &op : g_operators){
         ops.push_back(&op);
     }
-    save_plan(ops);
+    save_plan(ops,true);
 }
