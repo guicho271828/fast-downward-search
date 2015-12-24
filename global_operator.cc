@@ -113,16 +113,16 @@ void GlobalEffect::dump() const {
 }
 
 void GlobalOperator::dump() const {
-    cout << name << ":";
-    for (size_t i = 0; i < preconditions.size(); ++i) {
-        cout << " [";
-        preconditions[i].dump();
-        cout << "]";
-    }
-    for (size_t i = 0; i < effects.size(); ++i) {
-        cout << " [";
-        effects[i].dump();
-        cout << "]";
-    }
+    cout << "action dump: " << name;
+    // for (size_t i = 0; i < preconditions.size(); ++i) {
+    //     cout << " [";
+    //     preconditions[i].dump();
+    //     cout << "]";
+    // }
+    // for (size_t i = 0; i < effects.size(); ++i) {
+    //     cout << " [";
+    //     effects[i].dump();
+    //     cout << "]";
+    // }
     cout << endl;
 }

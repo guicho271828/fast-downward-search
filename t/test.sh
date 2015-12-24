@@ -1,1 +1,1 @@
-./downward-release --heuristic "h=blind()" --search "eager(tiebreaking([sum([g(),h]),h]),bound=3)" < t/depot
+./downward-release --search "eager(tiebreaking([g()]))" < t/depot
