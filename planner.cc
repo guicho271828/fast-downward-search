@@ -38,19 +38,7 @@ int main(int argc, const char **argv) {
         exit_with(EXIT_INPUT_ERROR);
     }
 
-    Timer search_timer;
-    engine->search();
-    search_timer.stop();
-    g_timer.stop();
-
-    engine->dump_all_paths();
-    engine->print_statistics();
-    cout << "Search time: " << search_timer << endl;
-    cout << "Total time: " << g_timer << endl;
-
-    if (engine->found_solution()) {
-        exit_with(EXIT_PLAN_FOUND);
-    } else {
-        exit_with(EXIT_UNSOLVED_INCOMPLETE);
+    for (auto &op : g_operators){
+        op.dump();
     }
 }
