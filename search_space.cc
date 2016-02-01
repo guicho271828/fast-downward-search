@@ -158,6 +158,30 @@ void SearchSpace::trace_path(const GlobalState &goal_state,
     reverse(path.begin(), path.end());
 }
 
+void SearchSpace::trace_landscape(const GlobalState &goal_state,
+                                  vector<const int *> &estimates,
+                                  vector<const int *> &actual) const {
+    GlobalState current_state = goal_state;
+    int remaining = 0;
+    assert(path.empty());
+    for (;;) {
+        const SearchNodeInfo &info = search_node_infos[current_state];
+        const GlobalOperator *op = info.creating_operator;
+        // EvaluationContext ctx = EvaluationContext(current_state, info.g, true, &statistics);
+        actual.push_back(new int(remaining));
+        remaining += op->get_cost();
+        estimates.push_back(new int(info.h));
+        if (op == 0) {
+            assert(info.parent_state_id == StateID::no_state);
+            break;
+        }
+        current_state = g_state_registry->lookup_state(info.parent_state_id);
+    }
+    reverse(estimates.begin(), estimates.end());
+    reverse(actual.begin(), actual.end());
+}
+
+
 void SearchSpace::dump() const {
     for (PerStateInformation<SearchNodeInfo>::const_iterator it =
              search_node_infos.begin(g_state_registry);

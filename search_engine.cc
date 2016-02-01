@@ -9,6 +9,7 @@
 #include <cassert>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 using namespace std;
 
@@ -71,6 +72,20 @@ bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
         Plan plan;
         search_space.trace_path(state, plan);
         set_plan(plan);
+        
+        // print action, distance to goal and heuristic estimates
+        vector<const int *> estimates;
+        vector<const int *> actual;
+        search_space.trace_landscape(state, estimates, actual);
+        assert(plan.size()==estimates.size());
+        assert(plan.size()==actual.size());
+        cout << "Printing estimate trace (name, estimate, actual)" << endl;
+        for (uint i=0; i++ ; i < plan.size()){
+            cout << "Step " << i << " : "
+                 << plan[i]->get_name() << " "
+                 << estimates[i] << " "
+                 << actual[i] << endl;
+        }
         return true;
     }
     return false;
