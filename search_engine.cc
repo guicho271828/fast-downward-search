@@ -79,12 +79,12 @@ bool SearchEngine::check_goal_and_set_plan(const GlobalState &state) {
         search_space.trace_landscape(state, estimates, actual);
         assert(plan.size()==estimates.size());
         assert(plan.size()==actual.size());
-        cout << "Printing estimate trace (name, estimate, actual)" << endl;
-        for (uint i=0; i++ ; i < plan.size()){
-            cout << "Step " << i << " : "
-                 << plan[i]->get_name() << " "
-                 << estimates[i] << " "
-                 << actual[i] << endl;
+        cout << "Printing estimate trace (estimate, actual, name)" << endl;
+        for (uint i=0; i < plan.size(); i++){
+            cout << "Step " << i << " "
+                 << *(estimates[i]) << " "
+                 << *(actual[i])    << " "
+                 << plan[i]->get_name() << endl;
         }
         return true;
     }

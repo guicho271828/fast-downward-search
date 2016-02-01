@@ -169,13 +169,18 @@ void SearchSpace::trace_landscape(const GlobalState &goal_state,
         const SearchNodeInfo &info = search_node_infos[current_state];
         const GlobalOperator *op = info.creating_operator;
         // EvaluationContext ctx = EvaluationContext(current_state, info.g, true, &statistics);
-        actual.push_back(new int(remaining));
-        remaining += op->get_cost();
-        estimates.push_back(new int(info.h));
         if (op == 0) {
             assert(info.parent_state_id == StateID::no_state);
             break;
         }
+        int* p = new int();
+        *p = remaining;
+        actual.push_back(p);
+        p = new int();
+        *p = info.get_h();
+        estimates.push_back(p);
+        cout << op->get_cost() << " " << remaining << endl;
+        remaining += op->get_cost();
         current_state = g_state_registry->lookup_state(info.parent_state_id);
     }
     reverse(estimates.begin(), estimates.end());
