@@ -163,7 +163,8 @@ void SearchSpace::trace_landscape(const GlobalState &goal_state,
                                   vector<const int *> &actual) const {
     GlobalState current_state = goal_state;
     int remaining = 0;
-    assert(path.empty());
+    assert(estimates.empty());
+    assert(actual.empty());
     for (;;) {
         const SearchNodeInfo &info = search_node_infos[current_state];
         const GlobalOperator *op = info.creating_operator;
