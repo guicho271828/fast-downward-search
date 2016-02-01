@@ -117,8 +117,6 @@ HEADERS += goal_count_heuristic.h
 HEADERS += hm_heuristic.h
 HEADERS += lm_cut_heuristic.h
 HEADERS += max_heuristic.h
-HEADERS += diversity_heuristic.h
-HEADERS += random_heuristic.h
 
 HEADERS += merge_and_shrink/labels.h \
            merge_and_shrink/merge_and_shrink_heuristic.h \
