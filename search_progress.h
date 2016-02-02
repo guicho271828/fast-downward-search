@@ -37,6 +37,7 @@ public:
       Prints one line of output for each new best heuristic value.
     */
     bool check_progress(const EvaluationContext &eval_context);
+    bool check_progress2(const EvaluationContext &eval_context);
 };
 
 #endif

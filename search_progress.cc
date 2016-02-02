@@ -45,3 +45,17 @@ bool SearchProgress::check_progress(const EvaluationContext &eval_context) {
         );
     return progress;
 }
+
+bool SearchProgress::check_progress2(const EvaluationContext &eval_context) {
+    bool progress = false;
+    eval_context.get_cache().for_each_heuristic_value(
+        [this, &progress](const Heuristic * heur, const EvaluationResult &result) {
+            int h = result.get_h_value();
+            if (process_heuristic_value(heur, h)) {
+                cout << "[debug] current heuristic value for "
+                     << heur->get_description() << ": " << h << endl;
+            }
+        }
+        );
+    return progress;
+}

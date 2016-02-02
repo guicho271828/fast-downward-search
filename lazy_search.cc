@@ -187,6 +187,7 @@ SearchStatus LazySearch::step() {
             int h = current_eval_context.get_heuristic_value(heuristics[0]);
             assert(heuristics.size()>=2);
             int h2 = current_eval_context.get_heuristic_value(heuristics[1]);
+            search_progress.check_progress2(current_eval_context);
             if (reopen) {
                 node.reopen(parent_node, current_operator);
                 statistics.inc_reopened();
