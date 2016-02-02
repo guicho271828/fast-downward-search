@@ -27,7 +27,6 @@ protected:
     bool randomize_successors;
     bool preferred_successors_first;
 
-    std::vector<Heuristic *> heuristics;
     std::vector<Heuristic *> preferred_operator_heuristics;
     std::vector<Heuristic *> estimate_heuristics;
 
@@ -52,6 +51,7 @@ protected:
     void print_checkpoint_line(int g) const;
 
 public:
+    std::vector<Heuristic *> heuristics;
     explicit LazySearch(const Options &opts);
     virtual ~LazySearch() = default;
 
