@@ -159,8 +159,8 @@ void SearchSpace::trace_path(const GlobalState &goal_state,
 }
 
 void SearchSpace::trace_landscape(const GlobalState &goal_state,
-                                  vector<const int *> &estimates,
-                                  vector<const int *> &actual) const {
+                                  vector<int> &estimates,
+                                  vector<int> &actual) const {
     GlobalState current_state = goal_state;
     int remaining = 0;
     assert(estimates.empty());
@@ -173,12 +173,11 @@ void SearchSpace::trace_landscape(const GlobalState &goal_state,
             assert(info.parent_state_id == StateID::no_state);
             break;
         }
-        int* p = new int();
-        *p = remaining;
-        actual.push_back(p);
-        p = new int();
-        *p = info.h;
-        estimates.push_back(p);
+        actual.push_back(remaining);
+        estimates.push_back(info.h);
+        // p = new int();
+        // *p = info.h2;
+        // estimates2.push_back(p);
         // cout << op->get_cost() << " " << remaining << endl;
         remaining += op->get_cost();
         current_state = g_state_registry->lookup_state(info.parent_state_id);

@@ -62,8 +62,8 @@ public:
     void trace_path(const GlobalState &goal_state,
                     std::vector<const GlobalOperator *> &path) const;
     void trace_landscape(const GlobalState &goal_state,
-                         std::vector<const int *> &estimates,
-                         std::vector<const int *> &actual) const;
+                         std::vector<int> &estimates,
+                         std::vector<int> &actual) const;
 
     void dump() const;
     void print_statistics() const;
