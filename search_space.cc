@@ -177,7 +177,7 @@ void SearchSpace::trace_landscape(const GlobalState &goal_state,
         *p = remaining;
         actual.push_back(p);
         p = new int();
-        *p = info.get_h();
+        *p = info.h;
         estimates.push_back(p);
         cout << op->get_cost() << " " << remaining << endl;
         remaining += op->get_cost();
