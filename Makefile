@@ -45,8 +45,6 @@ HEADERS = \
           countdown_timer.h \
           delegating_task.h \
           domain_transition_graph.h \
-          eager_search.h \
-          enforced_hill_climbing_search.h \
           equivalence_relation.h \
           evaluation_context.h \
           evaluation_result.h \

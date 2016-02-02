@@ -60,23 +60,25 @@ void SearchNode::clear_h_dirty() {
     info.h_is_dirty = false;
 }
 
-void SearchNode::open_initial(int h) {
+void SearchNode::open_initial(int h, int h2) {
     assert(info.status == SearchNodeInfo::NEW);
     info.status = SearchNodeInfo::OPEN;
     info.g = 0;
     info.real_g = 0;
     info.h = h;
+    info.h2 = h2;
     info.parent_state_id = StateID::no_state;
     info.creating_operator = 0;
 }
 
-void SearchNode::open(int h, const SearchNode &parent_node,
+void SearchNode::open(int h, int h2 ,const SearchNode &parent_node,
                       const GlobalOperator *parent_op) {
     assert(info.status == SearchNodeInfo::NEW);
     info.status = SearchNodeInfo::OPEN;
     info.g = parent_node.info.g + get_adjusted_action_cost(*parent_op, cost_type);
     info.real_g = parent_node.info.real_g + parent_op->get_cost();
     info.h = h;
+    info.h2 = h2;
     info.parent_state_id = parent_node.get_state_id();
     info.creating_operator = parent_op;
 }

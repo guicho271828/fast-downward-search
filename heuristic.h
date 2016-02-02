@@ -15,7 +15,6 @@ class Options;
 class TaskProxy;
 
 class Heuristic : public ScalarEvaluator {
-    std::string description;
     bool initialized;
 
     /*
@@ -52,6 +51,7 @@ protected:
     State convert_global_state(const GlobalState &global_state) const;
 
 public:
+    std::string description;
     Heuristic(const Options &options);
     virtual ~Heuristic() override;
 

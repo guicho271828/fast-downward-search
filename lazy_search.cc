@@ -11,6 +11,7 @@
 #include "weighted_evaluator.h"
 
 #include <algorithm>
+#include <iostream>
 #include <limits>
 
 static const int DEFAULT_LAZY_BOOST = 1000;
@@ -52,6 +53,12 @@ void LazySearch::initialize() {
 
     heuristics.assign(hset.begin(), hset.end());
     assert(!heuristics.empty());
+    cout << "num heuristics: " << heuristics.size() << endl;
+    cout << "num preferred: " << preferred_operator_heuristics.size() << endl;
+    cout << "num estimate??: " << estimate_heuristics.size() << endl;
+    for (auto h : heuristics){
+        cout << h->get_description() << endl;
+    }
 }
 
 void LazySearch::get_successor_operators(vector<const GlobalOperator *> &ops) {
@@ -178,15 +185,17 @@ SearchStatus LazySearch::step() {
         if (!open_list->is_dead_end(current_eval_context)) {
             // TODO: Generalize code for using multiple heuristics.
             int h = current_eval_context.get_heuristic_value(heuristics[0]);
+            assert(heuristics.size()>=2);
+            int h2 = current_eval_context.get_heuristic_value(heuristics[1]);
             if (reopen) {
                 node.reopen(parent_node, current_operator);
                 statistics.inc_reopened();
             } else if (current_predecessor_id == StateID::no_state) {
-                node.open_initial(h);
+                node.open_initial(h,h2);
                 if (search_progress.check_progress(current_eval_context))
                     print_checkpoint_line(current_g);
             } else {
-                node.open(h, parent_node, current_operator);
+                node.open(h, h2, parent_node, current_operator);
             }
             node.close();
             if (check_goal_and_set_plan(current_state))
@@ -337,6 +346,7 @@ static SearchEngine *_parse_greedy(OptionParser &parser) {
                         new StandardScalarOpenList<OpenListEntryLazy>(eval, true));
                 }
             }
+            cout << "length of inner lists (heuristics and preferred, in alternation): " << inner_lists.size() << endl;
             open = new AlternationOpenList<OpenListEntryLazy>(
                 inner_lists, opts.get<int>("boost"));
         }

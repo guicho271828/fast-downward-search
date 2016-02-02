@@ -46,6 +46,7 @@ public:
     explicit LamaMasterHeuristic(LamaFFSynergy *synergy)
         : Heuristic(Heuristic::default_options()),
           synergy(synergy) {
+        this->description = "Master Lama";
     }
 
     virtual ~LamaMasterHeuristic() override = default;
@@ -78,6 +79,7 @@ public:
         : Heuristic(Heuristic::default_options()),
           synergy(synergy),
           master(master) {
+        this->description = "Slave FF";
     }
 
     virtual EvaluationResult compute_result(

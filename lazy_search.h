@@ -27,8 +27,6 @@ protected:
     bool randomize_successors;
     bool preferred_successors_first;
 
-    std::vector<Heuristic *> preferred_operator_heuristics;
-    std::vector<Heuristic *> estimate_heuristics;
 
     GlobalState current_state;
     StateID current_predecessor_id;
@@ -51,6 +49,8 @@ protected:
     void print_checkpoint_line(int g) const;
 
 public:
+    std::vector<Heuristic *> preferred_operator_heuristics;
+    std::vector<Heuristic *> estimate_heuristics;
     std::vector<Heuristic *> heuristics;
     explicit LazySearch(const Options &opts);
     virtual ~LazySearch() = default;

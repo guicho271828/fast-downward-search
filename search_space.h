@@ -37,8 +37,8 @@ public:
     int get_real_g() const;
     int get_h() const;
 
-    void open_initial(int h);
-    void open(int h, const SearchNode &parent_node,
+    void open_initial(int h, int h2);
+    void open(int h, int h2, const SearchNode &parent_node,
               const GlobalOperator *parent_op);
     void reopen(const SearchNode &parent_node,
                 const GlobalOperator *parent_op);
