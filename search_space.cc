@@ -183,6 +183,7 @@ void SearchSpace::trace_landscape(const GlobalState &goal_state,
         current_state = g_state_registry->lookup_state(info.parent_state_id);
     }
     reverse(estimates.begin(), estimates.end());
+    reverse(estimates2.begin(), estimates2.end());
     reverse(actual.begin(), actual.end());
 }
 
