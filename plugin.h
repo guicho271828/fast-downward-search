@@ -68,6 +68,8 @@ public:
             "fd", FirstDepthOpenList<Entry>::_parse);
         Registry<OpenList<Entry > *>::instance()->register_object(
             "ld", LastDepthOpenList<Entry>::_parse);
+        Registry<OpenList<Entry > *>::instance()->register_object(
+            "loop", LoopingDepthOpenList<Entry>::_parse);
     }
 };
 
