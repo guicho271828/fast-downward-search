@@ -144,6 +144,35 @@ public:
 };
 
 template<class Reward, class Entry, template<typename,typename> class LT>
+class LoopingBandit : public Bandit<Reward,Entry,LT> {
+    typedef LT<Reward,Entry> L;
+protected:
+    int i = 0;
+public:
+    explicit LoopingBandit(){};
+    ~LoopingBandit(){};
+    L* do_select(){
+        deque<L*> availables;
+        for (auto &lever : this->levers){
+            if (lever.second.available()){
+                availables.push_back(&(lever.second));
+            }
+        }
+        assert(!availables.empty());
+        i++;
+        if (i>=availables.size()){
+            i=0;
+        }
+        return availables[i];
+    };
+    Reward score(L& lever){
+        Reward x = numeric_limits<Reward>::quiet_NaN();
+        return x;
+    };
+};
+
+
+template<class Reward, class Entry, template<typename,typename> class LT>
 class EpsilonBandit : public RandomBandit<Reward,Entry,LT> {
     typedef LT<Reward,Entry> L;
 protected:

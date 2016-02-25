@@ -60,6 +60,31 @@ public:
     static OpenList<Entry> *_parse(OptionParser &parser);
 };
 
+template<class Reward, class Entry>
+class LoopingPlateau : public Plateau<Reward,Entry,LoopingBandit> {
+public:
+    LoopingPlateau(int _queue, int _seed3) :
+        Plateau<Reward,Entry,LoopingBandit>(_queue, _seed3) {
+        // // inherited from LoopingBandit
+        // this->rng(_seed2);
+    };
+    ~LoopingPlateau(){};
+};
+
+template<class Entry>
+class LoopingDepthOpenList : public BanditOpenList<Entry,LoopingBandit> {
+    typedef typename BanditOpenList<Entry,LoopingBandit>::P P;
+protected:
+    P* make_plateau(){
+        // this->queue : inherited from AbstractTieBreakingOpenList
+        return new LoopingPlateau<double,Entry>(this->queue, this->seed3);
+    };
+public:
+    explicit LoopingDepthOpenList(const Options &opts);
+    ~LoopingDepthOpenList() override = default;
+    static OpenList<Entry> *_parse(OptionParser &parser);
+};
+
 
 
 
