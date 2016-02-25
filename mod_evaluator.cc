@@ -55,4 +55,4 @@ static ScalarEvaluator *_parse(OptionParser &parser) {
         return new ModEvaluator(opts);
 }
 
-static Plugin<ScalarEvaluator> _plugin("divisor", _parse);
+static Plugin<ScalarEvaluator> _plugin("mod", _parse);
