@@ -159,9 +159,9 @@ public:
             }
         }
         assert(!availables.empty());
-        i++;
-        if (i>=availables.size()){
-            i=0;
+        i--;
+        if (i<0){
+            i=availables.size()-1;
         }
         return availables[i];
     };
