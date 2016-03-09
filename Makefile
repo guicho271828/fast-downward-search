@@ -85,6 +85,7 @@ HEADERS = \
           variable_order_finder.h \
           weighted_evaluator.h \
           mod_evaluator.h \
+	  count_evaluator.h \
           \
           open_lists/alternation_open_list.h \
           open_lists/bucket_open_list.h \
