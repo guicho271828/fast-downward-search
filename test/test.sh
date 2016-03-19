@@ -12,8 +12,13 @@ do
     # ../downward-release --heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h]))' < $file > $file.2.fifo &
     # ../downward-release --heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h],fifo=false))' < $file > $file.2.lifo &
     # ../downward-release --heuristic 'r=random()' --heuristic 'h=lmcut()' --search 'eager(tiebreaking([sum([g(),h]),h,r]))' < $file > $file.2.random &
-    ../downward-release --heuristic 'h=lmcut()' --search 'eager(loop([sum([g(),h]),h]))' < $file > $file.2.loop &
-    ../downward-release --heuristic 'h=lmcut()' --search 'eager(rd([sum([g(),h]),h]))' < $file > $file.2.rd &
-    ../downward-release --heuristic 'h=lmcut()' --search 'eager(fd([sum([g(),h]),h]))' < $file > $file.2.fd &
-    wait
+    # ../downward-release --heuristic 'h=lmcut()' --search 'eager(loop([sum([g(),h]),h]))' < $file > $file.2.loop &
+    # ../downward-release --heuristic 'h=lmcut()' --search 'eager(rd([sum([g(),h]),h]))' < $file > $file.2.rd &
+    # ../downward-release --heuristic 'h=lmcut()' --search 'eager(fd([sum([g(),h]),h]))' < $file > $file.2.fd &
+    for h in cea add cg ff goalcount hm hmax ; do
+        ../downward-release --heuristic "h=$h()" --search 'eager(fd([sum([g(),h]),h]))' < $file > $file.2.fd.$h &
+    done
+    ../downward-release --heuristic "h=lmcount(lm_rhw())" --search 'eager(fd([sum([g(),h]),h]))' < $file > $file.2.fd.lmcount &
 done
+
+    wait
